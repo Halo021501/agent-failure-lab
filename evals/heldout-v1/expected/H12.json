@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "release_version": "3.12.1",
+  "features": [
+    "幂等队列投递",
+    "离线任务恢复 / extended",
+    "批次 12 的状态快照"
+  ],
+  "unresolved_issues": [
+    {
+      "id": "HO-12-A",
+      "title": "第 12 批资料索引需要补齐",
+      "status": "open"
+    }
+  ],
+  "test_summary": {
+    "total": 3,
+    "passed": 2,
+    "failed": 1
+  },
+  "test_rows": [
+    {
+      "version": "3.12.1",
+      "test_id": "CHECK-12-1",
+      "status": "passed"
+    },
+    {
+      "version": "3.12.1",
+      "test_id": "CHECK-12-2",
+      "status": "passed"
+    },
+    {
+      "version": "3.12.1",
+      "test_id": "CHECK-12-3",
+      "status": "failed"
+    }
+  ],
+  "missing_groups": [],
+  "overall_status": "complete"
+}

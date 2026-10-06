@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "release_version": "3.5.1",
+  "features": [
+    "资料版本识别",
+    "重放校验 / extended"
+  ],
+  "unresolved_issues": [
+    {
+      "id": "HO-5-A",
+      "title": "第 5 批资料索引需要补齐",
+      "status": "open"
+    }
+  ],
+  "test_summary": {
+    "total": 4,
+    "passed": 3,
+    "failed": 1
+  },
+  "test_rows": [
+    {
+      "version": "3.5.1",
+      "test_id": "CHECK-5-1",
+      "status": "passed"
+    },
+    {
+      "version": "3.5.1",
+      "test_id": "CHECK-5-2",
+      "status": "passed"
+    },
+    {
+      "version": "3.5.1",
+      "test_id": "CHECK-5-3",
+      "status": "failed"
+    },
+    {
+      "version": "3.5.1",
+      "test_id": "CHECK-5-4",
+      "status": "passed"
+    }
+  ],
+  "missing_groups": [],
+  "overall_status": "complete"
+}

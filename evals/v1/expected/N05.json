@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "release_version": "1.4.0",
+  "features": [
+    "断点恢复",
+    "执行记录导出"
+  ],
+  "unresolved_issues": [],
+  "test_summary": {
+    "total": 3,
+    "passed": 3,
+    "failed": 0
+  },
+  "test_rows": [
+    {
+      "version": "1.4.0",
+      "test_id": "T01",
+      "status": "passed"
+    },
+    {
+      "version": "1.4.0",
+      "test_id": "T02",
+      "status": "passed"
+    },
+    {
+      "version": "1.4.0",
+      "test_id": "T03",
+      "status": "passed"
+    }
+  ],
+  "missing_groups": [],
+  "overall_status": "complete"
+}

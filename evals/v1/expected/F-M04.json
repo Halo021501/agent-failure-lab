@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "release_version": null,
+  "features": null,
+  "unresolved_issues": null,
+  "test_summary": null,
+  "test_rows": [],
+  "missing_groups": [
+    "release",
+    "issues",
+    "tests"
+  ],
+  "overall_status": "partial"
+}

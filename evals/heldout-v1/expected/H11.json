@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "release_version": "3.11.1",
+  "features": [
+    "异常来源追踪",
+    "幂等队列投递 / extended"
+  ],
+  "unresolved_issues": null,
+  "test_summary": {
+    "total": 6,
+    "passed": 4,
+    "failed": 2
+  },
+  "test_rows": [
+    {
+      "version": "3.11.1",
+      "test_id": "CHECK-11-1",
+      "status": "passed"
+    },
+    {
+      "version": "3.11.1",
+      "test_id": "CHECK-11-2",
+      "status": "passed"
+    },
+    {
+      "version": "3.11.1",
+      "test_id": "CHECK-11-3",
+      "status": "failed"
+    },
+    {
+      "version": "3.11.1",
+      "test_id": "CHECK-11-4",
+      "status": "passed"
+    },
+    {
+      "version": "3.11.1",
+      "test_id": "CHECK-11-5",
+      "status": "passed"
+    },
+    {
+      "version": "3.11.1",
+      "test_id": "CHECK-11-6",
+      "status": "failed"
+    }
+  ],
+  "missing_groups": [
+    "issues"
+  ],
+  "overall_status": "partial"
+}

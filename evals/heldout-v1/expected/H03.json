@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "release_version": "3.3.1",
+  "features": [
+    "中文与 emoji 🧭",
+    "数据对账导出 / extended",
+    "批次 3 的状态快照"
+  ],
+  "unresolved_issues": [
+    {
+      "id": "HO-3-A",
+      "title": "第 3 批资料索引需要补齐",
+      "status": "open"
+    }
+  ],
+  "test_summary": {
+    "total": 6,
+    "passed": 4,
+    "failed": 2
+  },
+  "test_rows": [
+    {
+      "version": "3.3.1",
+      "test_id": "CHECK-3-1",
+      "status": "passed"
+    },
+    {
+      "version": "3.3.1",
+      "test_id": "CHECK-3-2",
+      "status": "passed"
+    },
+    {
+      "version": "3.3.1",
+      "test_id": "CHECK-3-3",
+      "status": "failed"
+    },
+    {
+      "version": "3.3.1",
+      "test_id": "CHECK-3-4",
+      "status": "passed"
+    },
+    {
+      "version": "3.3.1",
+      "test_id": "CHECK-3-5",
+      "status": "passed"
+    },
+    {
+      "version": "3.3.1",
+      "test_id": "CHECK-3-6",
+      "status": "failed"
+    }
+  ],
+  "missing_groups": [],
+  "overall_status": "complete"
+}

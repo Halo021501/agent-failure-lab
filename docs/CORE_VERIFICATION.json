@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-10-06T05:13:49.672882+00:00",
+  "source_fingerprint": "b9567f736a0fce23c28f4d0c1b5252f5a7392ffda19e13c561a102365b18a065",
+  "framework_fingerprint": "b4fd9340b3cce8e6ecda5a93724e543bbc6679ea86c34b1714223e31f2ef7ee0",
+  "tool_fingerprint": "f97badc8cc3654a60920849597334433ca58a704d1f3225f20ffe08693a34fe6",
+  "evaluator_fingerprint": "39f2e499e679d536a081e835e7363f21910a1655e40c2db680f8f24f7a4129cb",
+  "strategy_fingerprint": "b933c1e27606803915b5619fbce83598e303af42092d69638aeb698ebcf4bbba",
+  "runtime": {
+    "python": "3.12.5",
+    "platform": "win32"
+  },
+  "patterns": [
+    "test_lab.py",
+    "test_improvements.py",
+    "test_model.py",
+    "test_suites.py"
+  ],
+  "tests_run": 71,
+  "failures": 0,
+  "errors": 0,
+  "passed": true,
+  "source_unchanged_during_checks": true,
+  "external_model_requests": 0,
+  "excluded_pending_checks": [
+    "test_api.py",
+    "test_transport.py",
+    "scripts/verify_scaling.py"
+  ],
+  "scope": "Local core and simulated provider only; excludes HTTP transport verification and real model outcomes."
+}

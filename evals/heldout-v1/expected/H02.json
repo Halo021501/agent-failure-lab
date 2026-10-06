@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "release_version": "3.2.1",
+  "features": [
+    "分段检索结果",
+    "中文与 emoji 🧭 / extended"
+  ],
+  "unresolved_issues": [],
+  "test_summary": {
+    "total": 5,
+    "passed": 5,
+    "failed": 0
+  },
+  "test_rows": [
+    {
+      "version": "3.2.1",
+      "test_id": "CHECK-2-1",
+      "status": "passed"
+    },
+    {
+      "version": "3.2.1",
+      "test_id": "CHECK-2-2",
+      "status": "passed"
+    },
+    {
+      "version": "3.2.1",
+      "test_id": "CHECK-2-3",
+      "status": "passed"
+    },
+    {
+      "version": "3.2.1",
+      "test_id": "CHECK-2-4",
+      "status": "passed"
+    },
+    {
+      "version": "3.2.1",
+      "test_id": "CHECK-2-5",
+      "status": "passed"
+    }
+  ],
+  "missing_groups": [],
+  "overall_status": "complete"
+}

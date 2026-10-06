@@ -1,0 +1,15 @@
+{
+  "version": "3.6.1",
+  "issues": [
+    {
+      "id": "HO-6-A",
+      "title": "第 6 批资料索引需要补齐",
+      "status": "open"
+    },
+    {
+      "id": "HO-6-B",
+      "title": "历史关闭问题",
+      "status": "closed"
+    }
+  ]
+}

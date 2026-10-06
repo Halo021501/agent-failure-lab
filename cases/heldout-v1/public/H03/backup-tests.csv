@@ -1,0 +1,7 @@
+version,test_id,status
+3.3.1,CHECK-3-1,passed
+3.3.1,CHECK-3-2,passed
+3.3.1,CHECK-3-3,failed
+3.3.1,CHECK-3-4,passed
+3.3.1,CHECK-3-5,passed
+3.3.1,CHECK-3-6,failed

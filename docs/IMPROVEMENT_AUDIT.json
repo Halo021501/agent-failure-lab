@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-06T03:40:20.160294+00:00",
+  "purpose": "Next-phase planning diagnostics; not a v0.2 implementation or acceptance run.",
+  "data_directory": "E:\\Fun projects\\03-agent-failure-lab\\data\\verification\\planning-audit-af152b15",
+  "suite_hash": "1941f4d20f8bd1f0cab7aa72dbf41ac16c97cf428ee81c5183e1ac339f5e206f",
+  "source_fingerprint": "cb6df7c12b0e73a0c157eaf882e091acb3c28ecb4aa61b63712f770a07ef564e",
+  "scope": "Isolated offline data only; production runtime untouched; model requests 0.",
+  "observations": [
+    {
+      "id": "A01",
+      "topic": "live_integrity",
+      "observed": {
+        "artifact_error": "artifact_hash_mismatch",
+        "cached_contract_pass": 1,
+        "cached_contract_rate": 1.0
+      },
+      "source_run": "c0ba7ec7ee3848cca3b5e628ed78b34f",
+      "conclusion": "Artifact read detects corruption, but summary still counts the cached pass without a service restart."
+    },
+    {
+      "id": "A02",
+      "topic": "cancelled_denominators",
+      "observed": {
+        "eligible": 4,
+        "evaluated": 1,
+        "contract_pass": 1,
+        "contract_rate": 0.25,
+        "p50_seconds": 0,
+        "status_counts": {
+          "completed": 1,
+          "cancelled": 3
+        }
+      },
+      "conclusion": "Three runs cancelled before execution reduce the pass rate and add zero durations to the percentile."
+    },
+    {
+      "id": "A03",
+      "topic": "committed_but_unacknowledged_replay",
+      "observed": {
+        "original_status": "failed",
+        "original_artifact": "present",
+        "replay_status": "failed",
+        "replay_artifact": "missing_artifact"
+      },
+      "source_run": "bacda30c97d341a1a1c6fbc4450c3a13",
+      "replay_run": "b7b4926bf8d6440e90924b9d2f91e55d",
+      "conclusion": "Tool replay reproduces the lost-ack error but drops the recorded artifact commit side effect."
+    },
+    {
+      "id": "A04",
+      "topic": "comparison_provenance_and_labels",
+      "method": "In-memory copies of one valid experiment; no database edits.",
+      "observed": {
+        "different_source_fingerprint_comparable": true,
+        "different_budget_comparable": false,
+        "incompatible_pair_label": "improved",
+        "incompatible_delta": null
+      },
+      "conclusion": "The comparison ignores framework source provenance and emits improvement labels for incomparable experiments."
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "release_version": "3.6.1",
+  "features": [
+    "重放校验",
+    "通知静默时段 / extended",
+    "批次 6 的状态快照"
+  ],
+  "unresolved_issues": [
+    {
+      "id": "HO-6-A",
+      "title": "第 6 批资料索引需要补齐",
+      "status": "open"
+    }
+  ],
+  "test_summary": {
+    "total": 5,
+    "passed": 4,
+    "failed": 1
+  },
+  "test_rows": [
+    {
+      "version": "3.6.1",
+      "test_id": "CHECK-6-1",
+      "status": "passed"
+    },
+    {
+      "version": "3.6.1",
+      "test_id": "CHECK-6-2",
+      "status": "passed"
+    },
+    {
+      "version": "3.6.1",
+      "test_id": "CHECK-6-3",
+      "status": "failed"
+    },
+    {
+      "version": "3.6.1",
+      "test_id": "CHECK-6-4",
+      "status": "passed"
+    },
+    {
+      "version": "3.6.1",
+      "test_id": "CHECK-6-5",
+      "status": "passed"
+    }
+  ],
+  "missing_groups": [],
+  "overall_status": "complete"
+}

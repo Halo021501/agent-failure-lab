@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "release_version": "3.1.1",
+  "features": [
+    "离线任务恢复",
+    "分段检索结果 / extended"
+  ],
+  "unresolved_issues": [
+    {
+      "id": "HO-1-A",
+      "title": "第 1 批资料索引需要补齐",
+      "status": "open"
+    }
+  ],
+  "test_summary": {
+    "total": 4,
+    "passed": 3,
+    "failed": 1
+  },
+  "test_rows": [
+    {
+      "version": "3.1.1",
+      "test_id": "CHECK-1-1",
+      "status": "passed"
+    },
+    {
+      "version": "3.1.1",
+      "test_id": "CHECK-1-2",
+      "status": "passed"
+    },
+    {
+      "version": "3.1.1",
+      "test_id": "CHECK-1-3",
+      "status": "failed"
+    },
+    {
+      "version": "3.1.1",
+      "test_id": "CHECK-1-4",
+      "status": "passed"
+    }
+  ],
+  "missing_groups": [],
+  "overall_status": "complete"
+}

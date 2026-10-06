@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "release_version": "1.4.0",
+  "features": [
+    "断点恢复",
+    "执行记录导出"
+  ],
+  "unresolved_issues": [
+    {
+      "id": "ISS-101",
+      "title": "小屏时间线需要横向滚动",
+      "status": "open"
+    }
+  ],
+  "test_summary": null,
+  "test_rows": [],
+  "missing_groups": [
+    "tests"
+  ],
+  "overall_status": "partial"
+}

@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "release_version": "3.8.1",
+  "features": [
+    "长文定位",
+    "设备状态诊断 / extended"
+  ],
+  "unresolved_issues": [
+    {
+      "id": "HO-8-A",
+      "title": "第 8 批资料索引需要补齐",
+      "status": "open"
+    }
+  ],
+  "test_summary": {
+    "total": 3,
+    "passed": 2,
+    "failed": 1
+  },
+  "test_rows": [
+    {
+      "version": "3.8.1",
+      "test_id": "CHECK-8-1",
+      "status": "passed"
+    },
+    {
+      "version": "3.8.1",
+      "test_id": "CHECK-8-2",
+      "status": "passed"
+    },
+    {
+      "version": "3.8.1",
+      "test_id": "CHECK-8-3",
+      "status": "failed"
+    }
+  ],
+  "missing_groups": [],
+  "overall_status": "complete"
+}

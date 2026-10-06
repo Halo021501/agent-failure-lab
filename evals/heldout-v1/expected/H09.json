@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "release_version": "3.9.1",
+  "features": [
+    "设备状态诊断",
+    "历史批次检索 / extended",
+    "批次 9 的状态快照"
+  ],
+  "unresolved_issues": [
+    {
+      "id": "HO-9-A",
+      "title": "第 9 批资料索引需要补齐",
+      "status": "open"
+    }
+  ],
+  "test_summary": null,
+  "test_rows": [],
+  "missing_groups": [
+    "tests"
+  ],
+  "overall_status": "partial"
+}

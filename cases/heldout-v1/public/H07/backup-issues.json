@@ -1,0 +1,15 @@
+{
+  "version": "3.7.1",
+  "issues": [
+    {
+      "id": "HO-7-A",
+      "title": "第 7 批资料索引需要补齐",
+      "status": "open"
+    },
+    {
+      "id": "HO-7-B",
+      "title": "历史关闭问题",
+      "status": "closed"
+    }
+  ]
+}

@@ -1,0 +1,2167 @@
+{
+  "schema_version": 1,
+  "suite_version": "1.0.0",
+  "cases": [
+    {
+      "id": "N01",
+      "name": "完整的小规模发布资料",
+      "category": "normal",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": []
+    },
+    {
+      "id": "N02",
+      "name": "中英文混合资料",
+      "category": "normal",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": []
+    },
+    {
+      "id": "N03",
+      "name": "功能分散在两个文件",
+      "category": "normal",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-release-part2",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release-part2.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": []
+    },
+    {
+      "id": "N04",
+      "name": "目标版本与旧版本混合",
+      "category": "normal",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        },
+        {
+          "id": "primary-old-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-old-release.md"
+        },
+        {
+          "id": "primary-old-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-old-issues.json"
+        }
+      ],
+      "faults": []
+    },
+    {
+      "id": "N05",
+      "name": "合法空问题列表",
+      "category": "normal",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": []
+    },
+    {
+      "id": "N06",
+      "name": "问题去重与已解决筛选",
+      "category": "normal",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": []
+    },
+    {
+      "id": "F-T01",
+      "name": "首次读取超时",
+      "category": "T",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-T01-timeout",
+          "action": "timeout",
+          "tool": "read_source",
+          "selector": {
+            "group": "tests",
+            "scope": "primary"
+          },
+          "occurrences": [
+            1
+          ],
+          "phase": "before"
+        }
+      ]
+    },
+    {
+      "id": "F-T02",
+      "name": "前两次读取超时",
+      "category": "T",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-T02-timeout",
+          "action": "timeout",
+          "tool": "read_source",
+          "selector": {
+            "group": "tests",
+            "scope": "primary"
+          },
+          "occurrences": [
+            1,
+            2
+          ],
+          "phase": "before"
+        }
+      ]
+    },
+    {
+      "id": "F-T03",
+      "name": "主资料超时，备用可读",
+      "category": "T",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-T03-timeout",
+          "action": "timeout",
+          "tool": "read_source",
+          "selector": {
+            "group": "tests",
+            "scope": "primary"
+          },
+          "occurrences": "always",
+          "phase": "before"
+        }
+      ]
+    },
+    {
+      "id": "F-T04",
+      "name": "所有测试资料持续超时",
+      "category": "T",
+      "recoverable": false,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-T04-timeout",
+          "action": "timeout",
+          "tool": "read_source",
+          "selector": {
+            "group": "tests"
+          },
+          "occurrences": "always",
+          "phase": "before"
+        }
+      ]
+    },
+    {
+      "id": "F-M01",
+      "name": "主资料缺失，备用可读",
+      "category": "M",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-M01-missing",
+          "action": "missing",
+          "tool": "read_source",
+          "selector": {
+            "group": "release",
+            "scope": "primary"
+          },
+          "occurrences": "always",
+          "phase": "before"
+        }
+      ]
+    },
+    {
+      "id": "F-M02",
+      "name": "非必需说明缺失",
+      "category": "M",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-M02-missing",
+          "action": "missing",
+          "tool": "read_source",
+          "selector": {
+            "group": "notes"
+          },
+          "occurrences": "always",
+          "phase": "before"
+        }
+      ]
+    },
+    {
+      "id": "F-M03",
+      "name": "主索引指向过期文件",
+      "category": "M",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": true,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-M03-stale_index",
+          "action": "stale_index",
+          "tool": "list_sources",
+          "selector": {
+            "scope": "primary"
+          },
+          "occurrences": [
+            1
+          ],
+          "phase": "after"
+        }
+      ]
+    },
+    {
+      "id": "F-M04",
+      "name": "所有必需资料缺失",
+      "category": "M",
+      "recoverable": false,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-M04-missing",
+          "action": "missing",
+          "tool": "read_source",
+          "selector": {},
+          "occurrences": "always",
+          "phase": "before"
+        }
+      ]
+    },
+    {
+      "id": "F-S01",
+      "name": "首次 JSON 截断",
+      "category": "S",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-S01-truncate",
+          "action": "truncate",
+          "tool": "read_source",
+          "selector": {
+            "group": "issues",
+            "scope": "primary"
+          },
+          "occurrences": [
+            1
+          ],
+          "phase": "after"
+        }
+      ]
+    },
+    {
+      "id": "F-S02",
+      "name": "主 CSV 格式错误",
+      "category": "S",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-S02-bad_csv",
+          "action": "bad_csv",
+          "tool": "read_source",
+          "selector": {
+            "group": "tests",
+            "scope": "primary"
+          },
+          "occurrences": "always",
+          "phase": "after"
+        }
+      ]
+    },
+    {
+      "id": "F-S03",
+      "name": "首次 JSON 类型错误",
+      "category": "S",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-S03-wrong_type",
+          "action": "wrong_type",
+          "tool": "read_source",
+          "selector": {
+            "group": "issues",
+            "scope": "primary"
+          },
+          "occurrences": [
+            1
+          ],
+          "phase": "after"
+        }
+      ]
+    },
+    {
+      "id": "F-S04",
+      "name": "所有测试资料持续格式错误",
+      "category": "S",
+      "recoverable": false,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-S04-bad_csv",
+          "action": "bad_csv",
+          "tool": "read_source",
+          "selector": {
+            "group": "tests"
+          },
+          "occurrences": "always",
+          "phase": "after"
+        }
+      ]
+    },
+    {
+      "id": "F-E01",
+      "name": "首次目录为空",
+      "category": "E",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-E01-empty",
+          "action": "empty",
+          "tool": "list_sources",
+          "selector": {
+            "scope": "primary"
+          },
+          "occurrences": [
+            1
+          ],
+          "phase": "after"
+        }
+      ]
+    },
+    {
+      "id": "F-E02",
+      "name": "首次文件内容为空",
+      "category": "E",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-E02-empty",
+          "action": "empty",
+          "tool": "read_source",
+          "selector": {
+            "group": "release",
+            "scope": "primary"
+          },
+          "occurrences": [
+            1
+          ],
+          "phase": "after"
+        }
+      ]
+    },
+    {
+      "id": "F-E03",
+      "name": "主查询持续无结果",
+      "category": "E",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-E03-empty",
+          "action": "empty",
+          "tool": "list_sources",
+          "selector": {
+            "scope": "primary"
+          },
+          "occurrences": "always",
+          "phase": "after"
+        }
+      ]
+    },
+    {
+      "id": "F-E04",
+      "name": "所有版本资料持续为空",
+      "category": "E",
+      "recoverable": false,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-E04-empty",
+          "action": "empty",
+          "tool": "read_source",
+          "selector": {
+            "group": "release"
+          },
+          "occurrences": "always",
+          "phase": "after"
+        }
+      ]
+    },
+    {
+      "id": "F-D01",
+      "name": "重复投递同一响应",
+      "category": "D",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-D01-duplicate_delivery",
+          "action": "duplicate_delivery",
+          "tool": "read_source",
+          "selector": {
+            "group": "issues",
+            "scope": "primary"
+          },
+          "occurrences": "always",
+          "phase": "delivery"
+        }
+      ]
+    },
+    {
+      "id": "F-D02",
+      "name": "重复问题条目",
+      "category": "D",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-D02-duplicate_items",
+          "action": "duplicate_items",
+          "tool": "read_source",
+          "selector": {
+            "group": "issues",
+            "scope": "primary"
+          },
+          "occurrences": "always",
+          "phase": "after"
+        }
+      ]
+    },
+    {
+      "id": "F-D03",
+      "name": "旧响应迟到",
+      "category": "D",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-D03-stale_delivery",
+          "action": "stale_delivery",
+          "tool": "read_source",
+          "selector": {
+            "group": "tests",
+            "scope": "primary"
+          },
+          "occurrences": "always",
+          "phase": "delivery"
+        }
+      ]
+    },
+    {
+      "id": "F-D04",
+      "name": "提交成功后回执丢失",
+      "category": "D",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "F-D04-lost_ack",
+          "action": "lost_ack",
+          "tool": "write_report",
+          "selector": {},
+          "occurrences": [
+            1
+          ],
+          "phase": "after"
+        }
+      ]
+    },
+    {
+      "id": "X01",
+      "name": "超时后格式错误再恢复",
+      "category": "combined",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "X01-timeout",
+          "action": "timeout",
+          "tool": "read_source",
+          "selector": {
+            "group": "issues",
+            "scope": "primary"
+          },
+          "occurrences": [
+            1
+          ],
+          "phase": "before"
+        },
+        {
+          "id": "X01-truncate",
+          "action": "truncate",
+          "tool": "read_source",
+          "selector": {
+            "group": "issues",
+            "scope": "primary"
+          },
+          "occurrences": [
+            2
+          ],
+          "phase": "after"
+        }
+      ]
+    },
+    {
+      "id": "X02",
+      "name": "主文件缺失，备用首次为空",
+      "category": "combined",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "X02-missing",
+          "action": "missing",
+          "tool": "read_source",
+          "selector": {
+            "group": "release",
+            "scope": "primary"
+          },
+          "occurrences": "always",
+          "phase": "before"
+        },
+        {
+          "id": "X02-empty",
+          "action": "empty",
+          "tool": "read_source",
+          "selector": {
+            "group": "release",
+            "scope": "backup"
+          },
+          "occurrences": [
+            1
+          ],
+          "phase": "after"
+        }
+      ]
+    },
+    {
+      "id": "X03",
+      "name": "提交回执丢失后重复投递",
+      "category": "combined",
+      "recoverable": true,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "X03-lost_ack",
+          "action": "lost_ack",
+          "tool": "write_report",
+          "selector": {},
+          "occurrences": [
+            1
+          ],
+          "phase": "after"
+        },
+        {
+          "id": "X03-duplicate_delivery",
+          "action": "duplicate_delivery",
+          "tool": "write_report",
+          "selector": {},
+          "occurrences": [
+            2
+          ],
+          "phase": "delivery"
+        }
+      ]
+    },
+    {
+      "id": "X04",
+      "name": "主问题格式错误且备用缺失",
+      "category": "combined",
+      "recoverable": false,
+      "target_version": "1.4.0",
+      "stale_index": false,
+      "sources": [
+        {
+          "id": "primary-release",
+          "group": "release",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-release.md"
+        },
+        {
+          "id": "primary-issues",
+          "group": "issues",
+          "scope": "primary",
+          "format": "json",
+          "path": "primary-issues.json"
+        },
+        {
+          "id": "primary-tests",
+          "group": "tests",
+          "scope": "primary",
+          "format": "csv",
+          "path": "primary-tests.csv"
+        },
+        {
+          "id": "backup-release",
+          "group": "release",
+          "scope": "backup",
+          "format": "markdown",
+          "path": "backup-release.md"
+        },
+        {
+          "id": "backup-issues",
+          "group": "issues",
+          "scope": "backup",
+          "format": "json",
+          "path": "backup-issues.json"
+        },
+        {
+          "id": "backup-tests",
+          "group": "tests",
+          "scope": "backup",
+          "format": "csv",
+          "path": "backup-tests.csv"
+        },
+        {
+          "id": "primary-notes",
+          "group": "notes",
+          "scope": "primary",
+          "format": "markdown",
+          "path": "primary-notes.md"
+        }
+      ],
+      "faults": [
+        {
+          "id": "X04-wrong_type",
+          "action": "wrong_type",
+          "tool": "read_source",
+          "selector": {
+            "group": "issues",
+            "scope": "primary"
+          },
+          "occurrences": "always",
+          "phase": "after"
+        },
+        {
+          "id": "X04-missing",
+          "action": "missing",
+          "tool": "read_source",
+          "selector": {
+            "group": "issues",
+            "scope": "backup"
+          },
+          "occurrences": "always",
+          "phase": "before"
+        }
+      ]
+    }
+  ]
+}

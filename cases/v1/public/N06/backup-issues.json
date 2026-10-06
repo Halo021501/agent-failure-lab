@@ -1,0 +1,20 @@
+{
+  "version": "1.4.0",
+  "issues": [
+    {
+      "id": "ISS-101",
+      "title": "小屏时间线需要横向滚动",
+      "status": "open"
+    },
+    {
+      "id": "ISS-102",
+      "title": "历史记录分页修复",
+      "status": "closed"
+    },
+    {
+      "id": "ISS-101",
+      "title": "小屏时间线需要横向滚动",
+      "status": "open"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "release_version": "3.4.1",
+  "features": [
+    "数据对账导出",
+    "资料版本识别 / extended"
+  ],
+  "unresolved_issues": [
+    {
+      "id": "HO-4-A",
+      "title": "第 4 批资料索引需要补齐",
+      "status": "open"
+    }
+  ],
+  "test_summary": {
+    "total": 3,
+    "passed": 2,
+    "failed": 1
+  },
+  "test_rows": [
+    {
+      "version": "3.4.1",
+      "test_id": "CHECK-4-1",
+      "status": "passed"
+    },
+    {
+      "version": "3.4.1",
+      "test_id": "CHECK-4-2",
+      "status": "passed"
+    },
+    {
+      "version": "3.4.1",
+      "test_id": "CHECK-4-3",
+      "status": "failed"
+    }
+  ],
+  "missing_groups": [],
+  "overall_status": "complete"
+}

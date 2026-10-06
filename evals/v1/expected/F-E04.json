@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "release_version": null,
+  "features": null,
+  "unresolved_issues": [
+    {
+      "id": "ISS-101",
+      "title": "小屏时间线需要横向滚动",
+      "status": "open"
+    }
+  ],
+  "test_summary": {
+    "total": 3,
+    "passed": 2,
+    "failed": 1
+  },
+  "test_rows": [
+    {
+      "version": "1.4.0",
+      "test_id": "T01",
+      "status": "passed"
+    },
+    {
+      "version": "1.4.0",
+      "test_id": "T02",
+      "status": "failed"
+    },
+    {
+      "version": "1.4.0",
+      "test_id": "T03",
+      "status": "passed"
+    }
+  ],
+  "missing_groups": [
+    "release"
+  ],
+  "overall_status": "partial"
+}

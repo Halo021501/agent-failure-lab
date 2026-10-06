@@ -1,0 +1,15 @@
+{
+  "version": "3.10.1",
+  "issues": [
+    {
+      "id": "HO-10-A",
+      "title": "第 10 批资料索引需要补齐",
+      "status": "open"
+    },
+    {
+      "id": "HO-10-B",
+      "title": "历史关闭问题",
+      "status": "closed"
+    }
+  ]
+}
