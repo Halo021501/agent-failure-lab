@@ -2,7 +2,9 @@
 
 2026-10-06（Asia/Shanghai）。用户授权推送现有项目，并要求不做占用 GitHub 额度的测试。
 
-仓库：[Halo021501/03-agent-failure-lab](https://github.com/Halo021501/03-agent-failure-lab)。可见性为 private，默认分支 main。代码版本为 0.3.0-dev，保留未完成验收项，不声明完整发布。
+仓库：[Halo021501/agent-failure-lab](https://github.com/Halo021501/agent-failure-lab)。可见性为 private，默认分支 main。代码版本为 0.3.0-dev，保留未完成验收项，不声明完整发布。
+
+2026-10-07 更新：按用户要求移除 GitHub 仓库名称中的 `03-`，本机目录保持原编号。`README.md`（中文）与 `README.en.md`（English）提供互相切换的完整版本；GitHub 和包简介采用中英对照，后续按 [项目约定](../AGENTS.md) 同步维护。此轮仅修改仓库标识和文档/元数据，不重跑测试，GitHub Actions 继续关闭。
 
 ## 推送范围
 

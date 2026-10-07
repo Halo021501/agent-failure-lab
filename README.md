@@ -1,10 +1,12 @@
 # Agent 故障演练场
 
+**中文** | [English](README.en.md)
+
 **工具失败后，沿执行记录核查任务、事实与引用。**
 
-更新：2026-10-06（Asia/Shanghai）。v0.2 离线改进已实现，v0.3 OpenAI Responses 适配处于开发验收阶段。按用户要求，暂不执行消耗额度的真实模型测试，外部模型请求为 0。实际验证范围与剩余项见 [本轮构建报告](docs/BUILD_REPORT_V02_V03.md)。
+更新：2026-10-07（Asia/Shanghai）。v0.2 离线改进已实现，v0.3 OpenAI Responses 适配处于开发验收阶段。按用户要求，暂不执行消耗额度的真实模型测试，外部模型请求为 0。实际验证范围与剩余项见 [本轮构建报告](docs/BUILD_REPORT_V02_V03.md)。
 
-线上源码：[GitHub 私有仓库](https://github.com/Halo021501/03-agent-failure-lab)，默认分支 main。仓库的 GitHub Actions 关闭，本次推送不运行云端构建或测试；详情见 [仓库交付说明](docs/REPOSITORY_DELIVERY.md)。
+线上源码：[GitHub 私有仓库](https://github.com/Halo021501/agent-failure-lab)，默认分支 main。仓库的 GitHub Actions 关闭，本次推送不运行云端构建或测试；详情见 [仓库交付说明](docs/REPOSITORY_DELIVERY.md)。后续开发遵循 [项目约定](AGENTS.md)：中英文 README 同步维护，仓库简介保持中英对照。
 
 ## 启动与当前服务
 
@@ -15,9 +17,9 @@ Set-Location -LiteralPath 'E:\Fun projects\03-agent-failure-lab'
 .\start.ps1
 ~~~
 
-访问 [Agent 故障演练场](http://127.0.0.1:8767)。已有进程占用端口时，start.ps1 会提示；直接打开现有页面，或先在原服务终端按 Ctrl+C，再运行脚本。新环境先执行 setup.ps1，依赖锁为 requirements.lock.txt。
+访问 [Agent 故障演练场](http://127.0.0.1:8767)。已有进程占用端口时，start.ps1 会提示；直接打开现有页面，或先在原服务终端按 Ctrl+C，再运行脚本。新环境先执行 setup.ps1，依赖锁为 requirements.lock.txt。仓库改名后，本机项目目录仍使用编号 03；从 GitHub 克隆时可使用 agent-failure-lab 目录。
 
-**当前 8767 服务仍加载 v0.2 后端。** 新源码和静态页面已保存；重启服务后才能启用 v0.3 模型配置 API。旧后端上的模型入口自动禁用并提示重启。服务重启本身不会执行模型请求。
+**2026-10-06 最后核验时，8767 服务加载 v0.2 后端。** 新源码和静态页面已保存；该旧服务重启后才能启用 v0.3 模型配置 API。旧后端上的模型入口自动禁用并提示重启。服务重启本身不会执行模型请求。
 
 ## 已实现功能
 
@@ -74,7 +76,7 @@ Set-Location -LiteralPath 'E:\Fun projects\03-agent-failure-lab'
 
 verify_core 检查核心与模拟供应商，机器结果在 docs/CORE_VERIFICATION.json；它不包含 HTTP 或异步传输测试。完整本地检查使用 python -m unittest discover -s tests -q。verify_offline 另建 data/verification/acceptance-*，保存 180 次脚本实验和 120 次回放，更新 docs/verification-summary-v0.3-offline.json；历史 v0.1/v0.2 摘要保持保留。
 
-本次最终验证：71 项核心与模型模拟测试通过，180 次脚本实验及 120 次回放通过，三份验证/计划记录的源码指纹一致。恢复策略 90/90 处置通过、75/90 完整成功；这是脚本框架结果，真实模型请求仍为 0。
+2026-10-06 最终验证：71 项核心与模型模拟测试通过，180 次脚本实验及 120 次回放通过，三份验证/计划记录的源码指纹一致。恢复策略 90/90 处置通过、75/90 完整成功；这是脚本框架结果，真实模型请求仍为 0。本次仓库改名与双语文档更新未重跑测试。
 
 ## 模型配置（真实测试暂缓）
 
@@ -82,7 +84,7 @@ config/model.json 只保存模型名称、环境变量名称和预算；不保�
 
 ~~~powershell
 .\.venv\Scripts\python.exe -m lab model-config
-.\.venv\Scripts\python.exe -m lab model-config --model <账号可用的模型名称>
+.\.venv\Scripts\python.exe -m lab model-config --model <model_name>
 ~~~
 
 未来启用时，在启动服务的终端设置 OPENAI_API_KEY 环境变量，随后重启服务。无需向聊天发送密钥。模型执行需明确选择模型执行方式，或使用 CLI run --agent model --strategy model-recovery；默认执行方式始终为 script。本次没有执行这些模型命令。
