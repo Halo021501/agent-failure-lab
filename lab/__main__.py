@@ -59,7 +59,7 @@ def main():
     if args.command == "serve":
         import uvicorn
         from .app import create_app
-        uvicorn.run(create_app(args.data_dir), host="127.0.0.1", port=args.port)
+        uvicorn.run(create_app(args.data_dir, args.suite), host="127.0.0.1", port=args.port)
         return
     store = Store(args.data_dir)
     runner = Runner(store, Suite(namespace=args.suite))

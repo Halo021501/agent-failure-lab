@@ -256,7 +256,7 @@ class Store:
             try:
                 events = self.events(run_id)
                 event_sha = trace_hash(events)
-            except (ValueError, TypeError, KeyError):
+            except (LabError, ValueError, TypeError, KeyError):
                 events, malformed = [], True
             seal = run["metadata"].get("events_sha256")
             if malformed:
@@ -335,7 +335,7 @@ class Store:
         with self.lock, self.db:
             return self._event(run_id, kind, payload)
 
-    def events(self, run_id, after_seq=0, limit=None):
+    def events(self, run_id, after_seq=0, limit=None, tolerant=False):
         with self.lock:
             sql = "SELECT * FROM events WHERE run_id=? AND seq>? ORDER BY seq"
             params = [run_id, after_seq]
@@ -344,8 +344,22 @@ class Store:
                     raise ValueError("每页事件数量应为 1—200")
                 sql += " LIMIT ?"
                 params.append(limit)
-            return [{"seq": r["seq"], "kind": r["kind"], "payload": json.loads(r["payload"]), "created_at": r["created_at"]}
-                    for r in self.db.execute(sql, params)]
+            result = []
+            for row in self.db.execute(sql, params):
+                try:
+                    payload = json.loads(row["payload"])
+                    if not isinstance(payload, dict):
+                        raise ValueError("事件载荷应为对象")
+                    event = {"seq": row["seq"], "kind": row["kind"], "payload": payload, "created_at": row["created_at"]}
+                except (ValueError, TypeError):
+                    if not tolerant:
+                        raise LabError("invalid_trace", f"事件 #{row['seq']} 的记录格式损坏") from None
+                    event = {"seq": row["seq"], "kind": "event_corrupt", "created_at": row["created_at"],
+                             "payload": {"code": "invalid_trace", "original_kind": row["kind"],
+                                         "raw_sha256": content_hash(row["payload"]),
+                                         "message": "原事件载荷损坏；仅显示诊断，不作为有效执行证据"}}
+                result.append(event)
+            return result
 
     def _commit_index(self, run_id, key, sha, path):
         with self.db:

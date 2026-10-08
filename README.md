@@ -4,7 +4,7 @@
 
 **工具失败后，沿执行记录核查任务、事实与引用。**
 
-更新：2026-10-07（Asia/Shanghai）。v0.2 离线改进已实现，v0.3 OpenAI Responses 适配处于开发验收阶段。按用户要求，暂不执行消耗额度的真实模型测试，外部模型请求为 0。实际验证范围与剩余项见 [本轮构建报告](docs/BUILD_REPORT_V02_V03.md)。
+更新：2026-10-08（Asia/Shanghai）。v0.3.1-dev 新增网页套件切换、损坏事件诊断，并完善模型请求取消/期限边界；本地全量 94 项检查通过。按用户要求，暂不执行消耗额度的真实模型测试，外部模型请求为 0。实施范围见 [本版方案](docs/V031_PLAN.md)，验证证据见 [本版构建报告](docs/BUILD_REPORT_V031.md)。
 
 线上源码：[GitHub 私有仓库](https://github.com/Halo021501/agent-failure-lab)，默认分支 main。仓库的 GitHub Actions 关闭，本次推送不运行云端构建或测试；详情见 [仓库交付说明](docs/REPOSITORY_DELIVERY.md)。后续开发遵循 [项目约定](AGENTS.md)：中英文 README 同步维护，仓库简介保持中英对照。
 
@@ -19,27 +19,28 @@ Set-Location -LiteralPath 'E:\Fun projects\03-agent-failure-lab'
 
 访问 [Agent 故障演练场](http://127.0.0.1:8767)。已有进程占用端口时，start.ps1 会提示；直接打开现有页面，或先在原服务终端按 Ctrl+C，再运行脚本。新环境先执行 setup.ps1，依赖锁为 requirements.lock.txt。仓库改名后，本机项目目录仍使用编号 03；从 GitHub 克隆时可使用 agent-failure-lab 目录。
 
-**2026-10-06 最后核验时，8767 服务加载 v0.2 后端。** 新源码和静态页面已保存；该旧服务重启后才能启用 v0.3 模型配置 API。旧后端上的模型入口自动禁用并提示重启。服务重启本身不会执行模型请求。
+**2026-10-08 已启动并核验 v0.3.1-dev 本机服务。** 网页可选择原套件或独立留出套件，也可查看非敏感模型配置。页脚显示实际服务版本；后续修改 Python 源码后需重启服务。服务重启本身不会执行模型请求。
 
 ## 已实现功能
 
-- 原 30 案例保持冻结；两条脚本策略、明确的故障激活与重试记录。
+- 原 30 案例与 12 个独立留出案例保持冻结；网页可切换套件，两条脚本策略保留明确的故障激活与重试记录。
 - 报告和执行事件分别核验哈希；完整性异常取消当前评测资格，保留历史结果及独立审计。
 - 提交意图、文件原子替换、索引与提交事件事务；同键同内容重试仅提交一次。
 - 已提交但回执丢失的失败记录能重现副作用；无产物失败也能严格回放。
 - 全库原子队列容量、条件认领、取消竞争保护、合法终态与实时步骤。
 - 实验和运行分页、事件增量加载；中文报告、折叠 JSON、实际来源定位与读取事件导航。
+- 损坏事件以诊断占位显示，保留序号及原载荷哈希；严格评测、回放和证据入口拒绝损坏记录，不修改原事件。
 - 追加式重新评测，保留原结果；逐事实、遗漏、错误、引用、字段组及规则覆盖各自统计。
 - 比较条件不一致或整组不完整时不给提升标签；JSON/CSV 和 CLI 共用统计逻辑。
 - OpenAI Responses 工具循环、最小/有限恢复两版提示词、非敏感本地配置和环境变量凭据。
-- 输入 Token 预检、输出限制、单案/整批预算、在途合作取消；异常和用量未知时停止继续生成。
+- 输入 Token 预检、输出限制、单案/整批预算、在途合作取消；客户端初始化也计入期限，响应完成后再次检查取消/超时；异常和用量未知时停止继续生成。
 - 每组实验保存固定资料与独立评测真值快照。另有 12 个独立合成留出案例，未用于模型提示词调优。
 
 资料均为项目自建的合成文件。公开工具只能列索引、读本案公开资料、写本次报告；评测真值与故障计划不会进入模型请求。
 
 ## 使用与指标
 
-1. 选择案例、策略、次数及预算，点击运行。
+1. 选择资料套件、案例、策略、次数及预算，点击运行。切换套件后重新全选，不混用两组案例。
 2. 打开一条运行，查看中文报告、完整性、评测断言及时间线。
 3. 点击引用定位本次实际读取的原文，再跳到读取事件。
 4. 建立同条件第二组，查看逐案比较或导出。
@@ -67,16 +68,17 @@ Set-Location -LiteralPath 'E:\Fun projects\03-agent-failure-lab'
 .\.venv\Scripts\python.exe -m lab compare <experiment_A> <experiment_B>
 .\.venv\Scripts\python.exe -m lab export <experiment_id> --format csv
 .\.venv\Scripts\python.exe -m lab --suite heldout-v1 cases
+.\.venv\Scripts\python.exe scripts/verify_local.py
 .\.venv\Scripts\python.exe scripts/verify_core.py
 .\.venv\Scripts\python.exe scripts/verify_offline.py
 .\.venv\Scripts\python.exe scripts/plan_model_experiments.py
 ~~~
 
---data-dir、--suite 放在子命令之前。网页当前默认原 v1 套件；留出套件通过 CLI 使用。模型实验规划脚本只写计划，不能发起请求。
+--data-dir、--suite 放在子命令之前。网页默认原 v1 套件，可从“资料套件”切换到 heldout-v1。CLI 的 --suite 也决定 serve 启动后的默认套件。两套件共用执行队列、容量和取消控制，运行/回放绑定各自套件哈希，不同套件实验不能正式比较。模型实验规划脚本只写计划，不能发起请求。
 
-verify_core 检查核心与模拟供应商，机器结果在 docs/CORE_VERIFICATION.json；它不包含 HTTP 或异步传输测试。完整本地检查使用 python -m unittest discover -s tests -q。verify_offline 另建 data/verification/acceptance-*，保存 180 次脚本实验和 120 次回放，更新 docs/verification-summary-v0.3-offline.json；历史 v0.1/v0.2 摘要保持保留。
+verify_local 检查全量核心、ASGI API 和异步模拟传输，并阻断真实 HTTP 传输，结果在 docs/LOCAL_VERIFICATION_V031.json。verify_core 仅检查核心与同步模拟供应商，结果在 docs/CORE_VERIFICATION.json。verify_offline 另建 data/verification/acceptance-*，保存 180 次脚本实验和 120 次回放，更新 docs/verification-summary-v0.3.1-offline.json。verify_scaling 在独立目录检查 106 实验、300 次运行、1 万事件，结果在 docs/SCALING_VERIFICATION_V031.json；所有历史验证摘要保留。
 
-2026-10-06 最终验证：71 项核心与模型模拟测试通过，180 次脚本实验及 120 次回放通过，三份验证/计划记录的源码指纹一致。恢复策略 90/90 处置通过、75/90 完整成功；这是脚本框架结果，真实模型请求仍为 0。本次仓库改名与双语文档更新未重跑测试。
+本版全量 94 项本地检查通过，含 14 项 API 与 9 项异步模拟传输，真实 HTTP 传输尝试为 0。180 次脚本实验、120 次回放及 106 实验/300 运行/1 万事件分页检查通过，源码指纹一致。恢复策略 90/90 处置通过、75/90 完整成功；网页留出脚本实验 12/12 处置通过、9/12 完整成功，768 像素窗口无横向溢出。这些结果只证明脚本框架与模拟接口行为；真实模型能力、Token 和费用仍未经实测。原 v0.3 的 71 项核心检查、180 次脚本实验与 120 次回放证据另存保留。
 
 ## 模型配置（真实测试暂缓）
 
@@ -98,8 +100,8 @@ SQLite 位于 data/runtime/lab.db，报告在 runs/<run_id>/，固定资料快�
 - 本地文件 I/O 在调用边界合作取消，无法强制终止卡住的系统调用。
 - 外部请求取消会中止本地等待，供应商端可能仍执行或计费；未取得用量时保守保留预算，费用未知。
 - 供应商实际 Token 超过预检/输出限制时记录实际值并停止；本地预算不能代替供应商账户消费上限。
-- 大响应仍保存在事件中；分页限制响应条数，未实现大内容分块。事件被人为破坏时部分浏览入口可能报错，但有效评测不会继续计分。
-- 100+ 实验/300 运行/1 万事件的独立 API 性能脚本已编写，尚未执行；最新 HTTP 与异步传输验收仍待完成。
+- 大响应仍保存在事件中；分页限制响应条数，未实现大内容分块。损坏事件提供诊断占位，相关运行失去有效评测与证据资格；数据库结构本身损坏不在此修复范围。
+- 本地 API 与模拟异步检查不验证真实供应商端行为。性能记录仅适用于固定本机样本，运行列表汇总仍扫描实验内全部运行，不声明任意数据规模性能。
 - 本地测试不能证明真实模型能力，当前真实请求、实际 token 与真实费用证据均无。
 
-开发入口：[改进方案](docs/NEXT_PHASE_PLAN.md)、[任务清单](docs/NEXT_PHASE_TASKS.md)、[本轮报告](docs/BUILD_REPORT_V02_V03.md)、[历史首版报告](docs/BUILD_REPORT.md)、[留出冻结清单](docs/HELDOUT_FREEZE.json)。
+开发入口：[本版方案](docs/V031_PLAN.md)、[本版报告](docs/BUILD_REPORT_V031.md)、[前一阶段方案](docs/NEXT_PHASE_PLAN.md)、[任务清单](docs/NEXT_PHASE_TASKS.md)、[前版报告](docs/BUILD_REPORT_V02_V03.md)、[历史首版报告](docs/BUILD_REPORT.md)、[留出冻结清单](docs/HELDOUT_FREEZE.json)。

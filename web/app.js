@@ -4,6 +4,8 @@ let catalog=[], chosen=new Set(), experiments=[], currentExperiment=null, curren
 let detailVersion=0, reportSignature="", lastEventSeq=0, eventCount=0;
 let experimentBefore=null, experimentHistory=[], runAfter=null, runHistory=[], nextRunAfter=null, moreExperiments=false;
 let modelSettings=null;
+let suiteNamespace="v1", suiteSelection=false, catalogVersion=0, catalogReady=false;
+const suiteLabels={v1:"原套件", "heldout-v1":"独立留出"};
 const strategyLabels={recovery:"有限恢复脚本","no-recovery":"无恢复脚本","model-minimal":"模型 · 最小提示词","model-recovery":"模型 · 有限恢复提示词"};
 const labels={normal:"正常",T:"超时",M:"缺文件",S:"格式错误",E:"空结果",D:"重复响应",combined:"组合"};
 const states={pending:"排队",running:"运行中",completed:"完成",failed:"执行失败",cancelled:"已停止",interrupted:"已中断",budget_exceeded:"预算耗尽"};
@@ -13,6 +15,7 @@ const eventLabels={run_started:"开始运行",tool_call:"工具调用",tool_raw_
 const checkLabels={report_schema:"报告格式",version_fact:"版本事实",feature_facts:"功能事实",issue_facts:"问题事实",test_facts:"测试统计",expected_status:"报告状态",required_gaps:"必要缺口",partial_is_explicit:"明确标记缺口",version_citation:"版本引用",unknown_version_has_no_citations:"未知版本没有伪造引用",empty_issues_supported:"空问题列表有依据",test_citations_cover_expected_rows:"测试引用覆盖全部记录",single_artifact_commit:"报告仅提交一次",consistent_write_key:"写入使用一致幂等键",execution_completed:"执行正常结束"};
 const integrityLabels={valid:"记录已核验",invalid:"记录完整性异常",unverified:"记录尚未核验"};
 Object.assign(eventLabels,{model_token_count_request:"输入 Token 预检请求",model_token_count:"输入 Token 预检结果",model_request:"模型生成请求",model_response:"模型可见响应与用量",model_tool_dispatch:"模型工具调用映射",model_error:"模型请求错误"});
+eventLabels.event_corrupt="事件记录损坏 · 仅诊断";
 function el(tag,text,cls){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(cls)node.className=cls;return node;}
 function message(text,error=false){$("message").textContent=text;$("message").className=error?"error":"";}
 async function api(path,body){const response=await fetch(path,body===undefined?{}:{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const result=await response.json();if(!response.ok)throw new Error(typeof result.detail==="string"?result.detail:JSON.stringify(result.detail));return result;}
@@ -41,11 +44,13 @@ $("category").onchange=renderCases;
 $("all-cases").onchange=()=>{chosen=new Set($("all-cases").checked?catalog.map(c=>c.id):[]);renderCases();};
 $("run-selected").onclick=()=>action(()=>startExperiment([...chosen]));
 async function startExperiment(ids){
+  if(!catalogReady)throw new Error("资料套件仍在加载，请稍后再运行");
   if(!ids.length)throw new Error("请先选择案例");
   const repeats=Number($("repeats").value),tools=Number($("tool-budget").value),wall=Number($("wall-budget").value);
   if(!Number.isInteger(repeats)||repeats<1||repeats>10)throw new Error("重复次数应为 1—10 的整数");
   if(!Number.isInteger(tools)||tools<1||tools>256||!Number.isFinite(wall)||wall<=0||wall>3600)throw new Error("请填写有效的工具预算和时限");
   const body={case_ids:ids,strategy:$("strategy").value,repeats,budget:{max_tool_calls:tools,wall_seconds:wall}};
+  if(suiteSelection)body.suite_namespace=suiteNamespace;
   if($("agent-kind").value==="model"){body.agent_kind="model";body.budget.max_model_calls=Number($("model-call-budget").value);}
   const result=await api("/api/experiments",body);
   currentExperiment=result.id;resetRun(null);runAfter=null;runHistory=[];experimentBefore=null;experimentHistory=[];
@@ -78,7 +83,7 @@ async function showExperiment(id){
   const s=result.summary;$("metrics").replaceChildren();
   [["完整任务",s.complete+" / "+s.eligible,"正确 partial 单独计为处置通过"],["处置通过",percent(s.contract_rate),s.contract_pass+" / "+s.eligible+" 个有效自然结束样本"],["条件恢复",percent(s.recovery_rate),s.recovered+" / "+s.recoverable_activated+" 个已触发可恢复案例"],["规则覆盖",percent(s.rule_coverage),s.activated_rules+" / "+s.fault_rules+" 条故障规则"]].forEach(([title,value,note])=>{const node=el("div",undefined,"metric");node.append(el("small",title),el("strong",value),el("small",note));$("metrics").append(node);});
   const counts=Object.entries(s.status_counts).map(([k,v])=>(states[k]||k)+" "+v).join(" · ");
-  $("experiment-note").textContent="实验 "+id.slice(0,8)+" · "+modes[result.config.mode]+" · "+counts;
+  $("experiment-note").textContent="实验 "+id.slice(0,8)+" · "+(suiteLabels[result.config.suite_namespace||"v1"]||result.config.suite_namespace)+" · "+modes[result.config.mode]+" · "+counts;
   $("coverage-note").textContent=(s.experiment_complete?"整组已完成":"整组尚未完整，正式比较不可用")+" · 已执行 "+s.executed+" / "+s.total+" · 工具尝试 "+s.tool_calls+" · 模型请求 "+s.model_calls+" · 完整性异常 "+s.integrity_invalid+" · 未核验 "+s.integrity_unverified;
   $("coverage-note").className=s.experiment_complete?"notice good":"notice warn";
   $("fact-note").textContent="逐事实 "+s.facts_correct+" / "+s.facts_total+" · 遗漏 "+s.facts_missing+" · 错误 "+s.facts_errors+" · 引用 "+s.citations_valid+" / "+s.citations_total+" · 字段组 "+s.field_groups_correct+" / "+s.field_groups_total+" · 实际 P50 "+(s.p50_seconds==null?"N/A":s.p50_seconds.toFixed(3)+" 秒")+" · 模拟故障 "+s.simulated_fault_seconds+" 秒";
@@ -145,7 +150,7 @@ async function showRun(id){
   if(eventCount<500)await loadEvents(id,version);
 }
 function eventNode(event){
-  const node=el("details",undefined,"event"+(event.kind.includes("error")||event.kind==="fault_activated"?" error":""));node.id="event-"+event.seq;
+  const node=el("details",undefined,"event"+(event.kind.includes("error")||event.kind==="fault_activated"||event.kind==="event_corrupt"?" error":""));node.id="event-"+event.seq;
   const heading=el("summary");heading.append(el("span",String(event.seq).padStart(3,"0"),"time"),el("span",eventLabels[event.kind]||event.kind));node.append(heading,el("pre",JSON.stringify(event.payload,null,2)));return node;
 }
 async function loadEvents(id,version){
@@ -195,4 +200,23 @@ function updateAgentOptions(){const model=$("agent-kind").value==="model";$("str
 $("agent-kind").onchange=updateAgentOptions;
 function showModelSettings(settings){modelSettings=settings;$("model-name").value=settings.model;$("model-input-tokens").value=settings.max_input_tokens;$("model-output-tokens").value=settings.max_output_tokens;$("model-response-tokens").value=settings.max_output_tokens_per_response;$("batch-input-tokens").value=settings.max_batch_input_tokens;$("batch-output-tokens").value=settings.max_batch_output_tokens;$("model-config-state").textContent=settings.configured?"已配置 · "+settings.provider+" · "+settings.model:(settings.reason||"未配置");$("credential-state").textContent=settings.api_key_env+"："+(settings.credential_present?"服务进程已读取":"未读取；设置后重启服务");}
 $("save-model-config").onclick=()=>action(async()=>{if(!modelSettings)throw new Error("模型配置接口尚未加载，请重启服务到新版本");const {credential_present,configured,reason,...values}=modelSettings;values.model=$("model-name").value.trim();for(const [id,key] of [["model-input-tokens","max_input_tokens"],["model-output-tokens","max_output_tokens"],["model-response-tokens","max_output_tokens_per_response"],["batch-input-tokens","max_batch_input_tokens"],["batch-output-tokens","max_batch_output_tokens"]])values[key]=Number($(id).value);showModelSettings(await api("/api/model-config",values));message("模型名称与预算已保存在本机。");});
-action(async()=>{const status=await api("/api/status");$("tool-budget").value=status.defaults.max_tool_calls;$("wall-budget").value=status.defaults.wall_seconds;$("model-call-budget").value=status.defaults.max_model_calls;catalog=(await api("/api/cases")).cases;chosen=new Set(catalog.map(c=>c.id));renderCases();await loadExperiments();if(status.version==="0.2.0"){$("agent-kind").querySelector('option[value="model"]').disabled=true;$("model-config-state").textContent="新适配代码已保存，重启服务后启用模型接口";$("save-model-config").disabled=true;}else showModelSettings(await api("/api/model-config"));});
+async function loadCatalog(namespace){
+  const version=++catalogVersion;catalogReady=false;$("run-selected").disabled=true;$("case-grid").replaceChildren();
+  const result=await api("/api/cases"+(suiteSelection?"?suite="+encodeURIComponent(namespace):""));
+  if(version!==catalogVersion)return;
+  suiteNamespace=result.namespace||namespace;$("suite-select").value=suiteNamespace;
+  catalog=result.cases;chosen=new Set(catalog.map(c=>c.id));$("category").value="all";renderCases();
+  const counts=Object.entries(catalog.reduce((counts,c)=>(counts[c.category]=(counts[c.category]||0)+1,counts),{})).map(([key,value])=>(labels[key]||key)+" "+value).join(" · ");
+  $("page-cases").querySelector(".toolbar .muted").textContent=counts;
+  $("suite-note").textContent=(suiteLabels[suiteNamespace]||suiteNamespace)+" · "+result.version+" · SHA256 "+result.hash+(suiteNamespace==="heldout-v1"?" · 已冻结；脚本结果只验证框架，不证明模型能力。":" · 固定回归资料。");
+  catalogReady=true;$("run-selected").disabled=false;
+}
+$("suite-select").onchange=()=>action(()=>loadCatalog($("suite-select").value));
+action(async()=>{
+  const status=await api("/api/status");$("service-version").textContent=status.version;
+  $("tool-budget").value=status.defaults.max_tool_calls;$("wall-budget").value=status.defaults.wall_seconds;$("model-call-budget").value=status.defaults.max_model_calls;
+  suiteSelection=(status.capabilities||[]).includes("suite_selection");
+  if(suiteSelection){const inventory=await api("/api/suites");$("suite-select").replaceChildren();inventory.suites.forEach(s=>{const option=el("option",(suiteLabels[s.namespace]||s.namespace)+" · "+s.count+" 案例");option.value=s.namespace;$("suite-select").append(option);});suiteNamespace=inventory.default;$("suite-select").disabled=false;}
+  await loadCatalog(suiteNamespace);await loadExperiments();
+  if(status.version==="0.2.0"){$("agent-kind").querySelector('option[value="model"]').disabled=true;$("model-config-state").textContent="新适配代码已保存，重启服务后启用模型接口";$("save-model-config").disabled=true;}else showModelSettings(await api("/api/model-config"));
+});

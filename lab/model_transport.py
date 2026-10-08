@@ -4,7 +4,7 @@ import os
 import time
 from .common import Halt, LabError
 
-VERSION = "openai-responses-http-v1"
+VERSION = "openai-responses-http-v2"
 
 
 class OpenAITransport:
@@ -20,19 +20,25 @@ class OpenAITransport:
         request_deadline = min(deadline, time.perf_counter() + self.config.request_timeout_seconds)
         if request_deadline <= time.perf_counter():
             raise Halt("budget_exceeded", "实际时间预算已耗尽")
+
+        def check():
+            if cancel.is_set():
+                raise Halt("cancelled", "已取消本地模型请求")
+            if time.perf_counter() >= deadline:
+                raise Halt("budget_exceeded", "实际时间预算已耗尽")
+            if time.perf_counter() >= request_deadline:
+                raise LabError("model_timeout", "模型请求超过单次时限")
+
         async with httpx.AsyncClient(transport=httpx.AsyncHTTPTransport(retries=0, trust_env=False), trust_env=False,
                                     follow_redirects=False, timeout=self.config.request_timeout_seconds) as client:
+            check()  # Client initialization is part of both deadlines.
             task = asyncio.create_task(client.post("https://api.openai.com/v1/" + endpoint, json=payload,
                                                   headers={"Authorization": "Bearer " + self._credential}))
             try:
                 while not task.done():
-                    if cancel.is_set():
-                        raise Halt("cancelled", "已取消本地在途模型请求")
-                    if time.perf_counter() >= request_deadline:
-                        if time.perf_counter() >= deadline:
-                            raise Halt("budget_exceeded", "实际时间预算已耗尽")
-                        raise LabError("model_timeout", "模型请求超过单次时限")
+                    check()
                     await asyncio.wait({task}, timeout=min(.05, max(.001, request_deadline - time.perf_counter())))
+                check()  # Do not dispatch a response after cancellation or expiry.
                 response = task.result()
                 if not 200 <= response.status_code < 300:
                     raise LabError("model_http_error", f"OpenAI HTTP {response.status_code}；未自动重试")

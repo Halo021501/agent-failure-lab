@@ -77,6 +77,70 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(self.client.get("/api/cases").json()["count"], 30)
         self.assertFalse(self.client.get("/api/status").json()["model_configured"])
 
+    def test_suite_catalog_selection_and_shared_queue(self):
+        inventory = self.client.get("/api/suites").json()
+        self.assertEqual(inventory["default"], "v1")
+        self.assertEqual({s["namespace"]:s["count"] for s in inventory["suites"]}, {"v1":30,"heldout-v1":12})
+        heldout = self.client.get("/api/cases?suite=heldout-v1").json()
+        self.assertEqual(heldout["count"], 12)
+        self.assertTrue(all(c["id"].startswith("H") for c in heldout["cases"]))
+        self.assertEqual(self.client.get("/api/cases/H01?suite=heldout-v1").status_code,200)
+        self.assertEqual(self.client.get("/api/cases/H01").status_code,404)
+        self.assertEqual(self.client.get("/api/cases?suite=unknown").status_code,404)
+        self.assertEqual(self.client.post("/api/experiments",json={"suite_namespace":"heldout-v1","case_ids":["N01"]}).status_code,400)
+        self.assertEqual(self.client.post("/api/experiments",json={"suite_namespace":"unknown"}).status_code,404)
+        self.assertEqual(self.app.state.store.pending_count(),0)
+        held_runner = self.app.state.runners["heldout-v1"]
+        self.assertIs(held_runner.lock,self.app.state.runner.lock)
+        self.assertIs(held_runner.cancellations,self.app.state.runner.cancellations)
+        created = self.client.post("/api/experiments",json={"suite_namespace":"heldout-v1","case_ids":["H01","H12"]}).json()
+        result = self.wait_experiment(created["id"])
+        self.assertEqual(result["summary"]["contract_pass"],2)
+        self.assertEqual(result["config"]["suite_namespace"],"heldout-v1")
+        self.assertEqual(result["config"]["suite_hash"],heldout["hash"])
+        source = result["runs"][0]
+        for mode in ("trace_replay","tool_replay","fresh_run"):
+            response = self.client.post("/api/runs/"+source["id"]+"/replay",json={"mode":mode})
+            self.assertEqual(response.status_code,202)
+            replay = self.wait_experiment(response.json()["experiment_id"])["runs"][0]
+            self.assertEqual(replay["status"],"completed")
+            self.assertEqual(replay["metadata"]["suite_namespace"],"heldout-v1")
+
+    def test_corrupt_events_are_browsable_but_never_valid_evidence(self):
+        created = self.client.post("/api/experiments",json={"case_ids":["N01"]}).json()
+        result = self.wait_experiment(created["id"])
+        source = result["runs"][0]
+        ref = self.client.get("/api/runs/"+source["id"]).json()["report"]["features"][0]["evidence"][0]
+        store = self.app.state.store
+        for corrupt in ("{broken", "[]", "null"):
+            with store.lock,store.db:
+                store.db.execute("UPDATE events SET payload=? WHERE run_id=? AND seq=1",(corrupt,source["id"]))
+            detail = self.client.get("/api/runs/"+source["id"]).json()
+            self.assertEqual(detail["integrity"]["reason"],"invalid_trace")
+            self.assertIsNone(detail["evaluation"])
+            events = self.client.get("/api/runs/"+source["id"]+"/events?limit=2").json()
+            self.assertEqual(events[0]["kind"],"event_corrupt")
+            self.assertEqual(len(events[0]["payload"]["raw_sha256"]),64)
+            self.assertEqual(events[1]["seq"],2)
+            self.assertEqual(self.client.get("/api/experiments/"+created["id"]).json()["summary"]["contract_pass"],0)
+            self.assertIsNone(self.client.get("/api/experiments/"+created["id"]+"/export").json()["runs"][0]["evaluation"])
+            evidence = self.client.get("/api/runs/"+source["id"]+"/evidence",params={"source_id":ref["source_id"],"sha256":ref["content_sha256"]})
+            self.assertEqual((evidence.status_code,evidence.json()["code"]),(409,"invalid_trace"))
+            for mode in ("trace_replay","tool_replay"):
+                response = self.client.post("/api/runs/"+source["id"]+"/replay",json={"mode":mode})
+                self.assertEqual((response.status_code,response.json()["code"]),(409,"invalid_trace"))
+            self.assertEqual(self.client.post("/api/runs/"+source["id"]+"/reevaluate",json={}).status_code,409)
+            with store.lock:
+                self.assertEqual(store.db.execute("SELECT payload FROM events WHERE run_id=? AND seq=1",(source["id"],)).fetchone()[0],corrupt)
+
+    def test_service_default_suite_and_version_are_consistent(self):
+        from lab import __version__
+        self.assertEqual(self.client.get("/api/health").json()["version"],__version__)
+        self.assertEqual(self.client.get("/api/status").json()["version"],__version__)
+        with TestClient(create_app(Path(self.temp.name)/"other",namespace="heldout-v1"),base_url="http://127.0.0.1") as other:
+            self.assertEqual(other.get("/api/cases").json()["count"],12)
+            self.assertEqual(other.get("/api/status").json()["suite_namespace"],"heldout-v1")
+
     def test_case_run_events_artifact_replay_compare_and_export(self):
         created = self.client.post("/api/experiments", json={"case_ids": ["F-T01"]})
         self.assertEqual(created.status_code, 202)

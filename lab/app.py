@@ -2,12 +2,14 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI, HTTPException, Request, Query
+from fastapi import FastAPI, Request, Query
 from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field, StrictInt
 
 from .common import ROOT, LabError, NotFound, content_hash
+from . import __version__
+from .cases import Suite
 from .compare import compare, summary
 from .exporting import csv_export
 from .runner import Runner
@@ -24,6 +26,7 @@ class ExperimentInput(BaseModel):
     seed: StrictInt = 0
     budget: dict | None = None
     agent_kind: str = "script"
+    suite_namespace: str | None = None
 
 
 class ReplayInput(BaseModel):
@@ -38,9 +41,15 @@ class CompareInput(BaseModel):
     right: str
 
 
-def create_app(directory=ROOT / "data/runtime"):
+def create_app(directory=ROOT / "data/runtime", namespace="v1"):
     store = Store(Path(directory))
-    runner = Runner(store)
+    runner = Runner(store, Suite(namespace=namespace))
+    runners = {namespace: runner}
+    for name in ("v1", "heldout-v1"):
+        if name != namespace:
+            sibling = Runner(store, Suite(namespace=name))
+            sibling.cancellations, sibling.lock = runner.cancellations, runner.lock
+            runners[name] = sibling
     executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="lab-runner")
 
     @asynccontextmanager
@@ -54,6 +63,13 @@ def create_app(directory=ROOT / "data/runtime"):
 
     app = FastAPI(title="Agent 故障演练场", lifespan=lifespan)
     app.state.store, app.state.runner, app.state.executor = store, runner, executor
+    app.state.runners = runners
+
+    def suite_runner(name=None):
+        name = namespace if name is None else name
+        if name not in runners:
+            raise NotFound("套件不存在")
+        return runners[name]
 
     @app.middleware("http")
     async def local_requests(request: Request, call_next):
@@ -104,11 +120,12 @@ def create_app(directory=ROOT / "data/runtime"):
 
     @app.get("/api/health")
     def health():
-        return {"status": "ok", "version": "0.3.0-dev"}
+        return {"status": "ok", "version": __version__}
 
     @app.get("/api/status")
     def status():
-        return {"version": "0.3.0-dev", "model_configured": runner.configured_model().public()["configured"], "agent_kind": "script",
+        return {"version": __version__, "model_configured": runner.configured_model().public()["configured"], "agent_kind": "script",
+                "suite_namespace": namespace, "capabilities": ["suite_selection", "corrupt_event_diagnostics"],
                 "suite": runner.suite.version, "suite_hash": runner.suite.hash,
                 "case_count": len(runner.suite.cases), "queue_pending": store.pending_count(),
                 "defaults": configured_budget().to_dict()}
@@ -122,14 +139,20 @@ def create_app(directory=ROOT / "data/runtime"):
         return save_model_config(payload)
 
     @app.get("/api/cases")
-    def cases():
-        return runner.suite.info()
+    def cases(suite: str | None = None):
+        return suite_runner(suite).suite.info()
+
+    @app.get("/api/suites")
+    def suites():
+        return {"default": namespace, "suites": [{key: value for key, value in item.suite.info().items() if key != "cases"}
+                                                 for item in runners.values()]}
 
     @app.get("/api/cases/{case_id}")
-    def case_detail(case_id: str):
-        if case_id not in runner.suite.cases:
+    def case_detail(case_id: str, suite: str | None = None):
+        selected = suite_runner(suite)
+        if case_id not in selected.suite.cases:
             raise NotFound("案例不存在")
-        case = runner.suite.get(case_id)
+        case = selected.suite.get(case_id)
         return dict(case.public(), faults=case.definition["faults"], case_hash=case.case_hash)
 
     @app.get("/api/experiments")
@@ -138,8 +161,9 @@ def create_app(directory=ROOT / "data/runtime"):
 
     @app.post("/api/experiments", status_code=202)
     def create_experiment(payload: ExperimentInput):
-        experiment_id = runner.create_experiment(payload.case_ids, payload.strategy, payload.repeats, payload.seed,
-                                                configured_budget(payload.budget), payload.agent_kind)
+        selected = suite_runner(payload.suite_namespace)
+        experiment_id = selected.create_experiment(payload.case_ids, payload.strategy, payload.repeats, payload.seed,
+                                                  configured_budget(payload.budget), payload.agent_kind)
         executor.submit(runner.execute_experiment, experiment_id)
         return info(experiment_id)
 
@@ -169,11 +193,13 @@ def create_app(directory=ROOT / "data/runtime"):
     @app.get("/api/runs/{run_id}/events")
     def events(run_id: str, after_seq: int = Query(0, ge=0), limit: int = Query(100, ge=1, le=200)):
         store.run(run_id)
-        return store.events(run_id, after_seq, limit)
+        return store.events(run_id, after_seq, limit, tolerant=True)
 
     @app.get("/api/runs/{run_id}/evidence")
     def evidence(run_id: str, source_id: str, sha256: str):
         run = store.run(run_id, force=True)
+        if run["integrity"]["state"] == "invalid":
+            raise LabError(run["integrity"]["reason"], "记录完整性异常，不能提供有效引用证据")
         for event in store.events(run_id):
             if event["kind"] != "tool_result":
                 continue
@@ -190,7 +216,9 @@ def create_app(directory=ROOT / "data/runtime"):
 
     @app.post("/api/runs/{run_id}/replay", status_code=202)
     def replay(run_id: str, payload: ReplayInput):
-        experiment_id, replay_id = runner.prepare_replay(run_id, payload.mode, payload.strategy)
+        source = store.run(run_id)
+        selected = suite_runner(source["metadata"].get("suite_namespace", "v1"))
+        experiment_id, replay_id = selected.prepare_replay(run_id, payload.mode, payload.strategy)
         executor.submit(runner.execute_experiment, experiment_id)
         return {"experiment_id": experiment_id, "run_id": replay_id, "status": "pending"}
 

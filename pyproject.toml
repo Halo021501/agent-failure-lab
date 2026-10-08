@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "agent-failure-lab"
-version = "0.3.0.dev0"
+version = "0.3.1.dev0"
 description = "Agent 故障演练场：工具故障注入、执行回放与评测，支持 OpenAI Responses API / Agent Failure Lab: tool fault injection, execution replay and evaluation with OpenAI Responses API."
 requires-python = ">=3.12"
 dependencies = ["fastapi==0.142.2", "uvicorn==0.54.0", "httpx==0.28.1"]

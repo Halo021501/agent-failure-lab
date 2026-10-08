@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "checked_date": "2026-10-08",
+  "timezone": "Asia/Shanghai",
+  "release": "0.3.1-dev",
+  "source_fingerprint": "712d83b425a15eaae13038f3bd36548e1674d82a527e76961990d948da694748",
+  "url": "http://127.0.0.1:8767/",
+  "experiment_id": "6a6cff0b62a7477a8b3dc7793c4f3433",
+  "suite_namespace": "heldout-v1",
+  "script_runs": 12,
+  "contract_pass": 12,
+  "complete_success": 9,
+  "correct_partial": 3,
+  "recoverable_recovered": 6,
+  "recoverable_activated": 6,
+  "activated_rules": 14,
+  "fault_rules": 14,
+  "facts_correct": 81,
+  "facts_total": 81,
+  "citations_valid": 98,
+  "citations_total": 98,
+  "model_calls": 0,
+  "cases_checked": [
+    "H01 complete report",
+    "H11 partial report"
+  ],
+  "model_configuration": "Name empty; OPENAI_API_KEY absent; no configuration changes or model execution",
+  "viewport": {
+    "width": 768,
+    "height": 960,
+    "client_width": 753,
+    "scroll_width": 753,
+    "override_reset": true
+  },
+  "screenshots": [
+    "docs/screenshots/v031-heldout-desktop.png",
+    "docs/screenshots/v031-suite-768.png"
+  ],
+  "scope": "Browser-observed local script behavior and layout; not real-model capability"
+}

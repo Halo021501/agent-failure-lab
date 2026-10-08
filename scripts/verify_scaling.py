@@ -10,9 +10,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from fastapi.testclient import TestClient
 from lab.app import create_app
+from lab import __version__
+from lab.provenance import fingerprints
 
 
 def main():
+    provenance = fingerprints()
     directory = ROOT / "data/verification" / ("scaling-" + uuid.uuid4().hex[:8])
     app = create_app(directory)
     measurements = []
@@ -51,10 +54,12 @@ def main():
         last_events = timed("/api/runs/" + probe_id + "/events?after_seq=9900&limit=100")
         assert len(first_events) == len(last_events) == 100
         assert (first_events[0]["seq"],last_events[-1]["seq"]) == (1,10000)
-        result = {"release":"0.2.0","data_directory":str(directory),"python":platform.python_version(),
+        assert provenance["source_fingerprint"] == fingerprints()["source_fingerprint"], "Source changed during verification"
+        result = {"release":__version__, **provenance, "passed":True, "source_unchanged_during_checks":True,
+                  "data_directory":str(directory),"python":platform.python_version(),
                   "platform":platform.platform(),"experiment_count":106,"completed_runs":300,
                   "run_pages":pages,"event_count":10000,"measurements":measurements,"model_requests":0}
-        output = ROOT / "docs/SCALING_VERIFICATION.json"
+        output = ROOT / "docs/SCALING_VERIFICATION_V031.json"
         output.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         print(json.dumps(result,ensure_ascii=False,indent=2))
 

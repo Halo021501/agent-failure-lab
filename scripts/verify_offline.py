@@ -11,6 +11,7 @@ from lab.compare import compare, summary
 from lab.replay import normalized_events
 from lab.runner import Runner
 from lab.storage import Store
+from lab import __version__
 
 
 def main():
@@ -50,7 +51,8 @@ def main():
             assert len({digest(normalized_events(store.events(r["id"]))) for r in sources}) == 1
         from lab.provenance import fingerprints
         assert fingerprints()["source_fingerprint"] == runner.fingerprint, "Source changed during acceptance; repeat on frozen code."
-        result = {"schema_version": 2, "release": "0.3.0-dev", "suite_version": runner.suite.version, "suite_hash": runner.suite.hash,
+        result = {"schema_version": 2, "release": __version__, "passed": True, "source_unchanged_during_checks": True,
+                  "suite_version": runner.suite.version, "suite_hash": runner.suite.hash,
                   "source_fingerprint": runner.fingerprint, "data_directory": str(directory),
                   "recovery_experiment": recovery_id, "control_experiment": control_id,
                   "recovery": a, "control": b, "trace_replayed_cases": replay_count,
@@ -60,7 +62,7 @@ def main():
                   "evaluator_version": recovery["config"]["evaluator_version"],
                   "scope": "script baselines and harness only"}
         (directory / "acceptance.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-        (ROOT / "docs/verification-summary-v0.3-offline.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (ROOT / "docs/verification-summary-v0.3.1-offline.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print(json.dumps(result, ensure_ascii=False, indent=2))
     finally:
         store.close()

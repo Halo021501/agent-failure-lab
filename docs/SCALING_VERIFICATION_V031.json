@@ -1,0 +1,74 @@
+{
+  "release": "0.3.1-dev",
+  "source_fingerprint": "712d83b425a15eaae13038f3bd36548e1674d82a527e76961990d948da694748",
+  "framework_fingerprint": "df67fad7f73dc1fa3084dfb6431a41d01949c7967a063346dff9e391bae2b268",
+  "tool_fingerprint": "f97badc8cc3654a60920849597334433ca58a704d1f3225f20ffe08693a34fe6",
+  "evaluator_fingerprint": "39f2e499e679d536a081e835e7363f21910a1655e40c2db680f8f24f7a4129cb",
+  "strategy_fingerprint": "b933c1e27606803915b5619fbce83598e303af42092d69638aeb698ebcf4bbba",
+  "runtime": {
+    "python": "3.12.5",
+    "platform": "win32"
+  },
+  "passed": true,
+  "source_unchanged_during_checks": true,
+  "data_directory": "E:\\Fun projects\\03-agent-failure-lab\\data\\verification\\scaling-61f39775",
+  "python": "3.12.5",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "experiment_count": 106,
+  "completed_runs": 300,
+  "run_pages": 6,
+  "event_count": 10000,
+  "measurements": [
+    {
+      "path": "/api/experiments?limit=50",
+      "seconds": 0.0047,
+      "bytes": 51633
+    },
+    {
+      "path": "/api/experiments?limit=100&before=af6483a9fee7445ab80c66dcc073e96e",
+      "seconds": 0.0033,
+      "bytes": 57569
+    },
+    {
+      "path": "/api/experiments/64f9c24151f44774af486b6cc9d39539?limit=50",
+      "seconds": 1.2368,
+      "bytes": 220540
+    },
+    {
+      "path": "/api/experiments/64f9c24151f44774af486b6cc9d39539?limit=50&after=11565988f44b42d29ce68c678a6cf0ca",
+      "seconds": 0.1841,
+      "bytes": 217624
+    },
+    {
+      "path": "/api/experiments/64f9c24151f44774af486b6cc9d39539?limit=50&after=c008df3769e3471f8e301e0dfb35ff26",
+      "seconds": 0.1837,
+      "bytes": 217307
+    },
+    {
+      "path": "/api/experiments/64f9c24151f44774af486b6cc9d39539?limit=50&after=47ce14c471494240be6d3050494a66f1",
+      "seconds": 0.1828,
+      "bytes": 219189
+    },
+    {
+      "path": "/api/experiments/64f9c24151f44774af486b6cc9d39539?limit=50&after=ea9dcbb690334301a735152d470cd3fe",
+      "seconds": 0.1905,
+      "bytes": 218551
+    },
+    {
+      "path": "/api/experiments/64f9c24151f44774af486b6cc9d39539?limit=50&after=aad2e85041e54ff791089d2c5db7ccea",
+      "seconds": 0.1815,
+      "bytes": 220784
+    },
+    {
+      "path": "/api/runs/d1e449d6d2c544489398a28fd5d075c3/events?limit=100",
+      "seconds": 0.0026,
+      "bytes": 10583
+    },
+    {
+      "path": "/api/runs/d1e449d6d2c544489398a28fd5d075c3/events?after_seq=9900&limit=100",
+      "seconds": 0.0021,
+      "bytes": 11002
+    }
+  ],
+  "model_requests": 0
+}
