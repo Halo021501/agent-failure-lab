@@ -1,9 +1,9 @@
 {
   "schema_version": 2,
-  "recorded_at": "2026-10-08T15:26:37.485220+00:00",
+  "recorded_at": "2026-10-10T16:42:29.497117+00:00",
   "source": {
-    "source_fingerprint": "712d83b425a15eaae13038f3bd36548e1674d82a527e76961990d948da694748",
-    "framework_fingerprint": "df67fad7f73dc1fa3084dfb6431a41d01949c7967a063346dff9e391bae2b268",
+    "source_fingerprint": "2809de2be728f4265b715004dae6679f505be8661183939bc0c2de53ff791420",
+    "framework_fingerprint": "80fd5baa0849cc175cfa7a3eb7032cea425f57872ee1e3ed3995fe0e20c01538",
     "tool_fingerprint": "f97badc8cc3654a60920849597334433ca58a704d1f3225f20ffe08693a34fe6",
     "evaluator_fingerprint": "39f2e499e679d536a081e835e7363f21910a1655e40c2db680f8f24f7a4129cb",
     "strategy_fingerprint": "b933c1e27606803915b5619fbce83598e303af42092d69638aeb698ebcf4bbba",
@@ -12,15 +12,16 @@
       "platform": "win32"
     }
   },
-  "release": "0.3.1-dev",
+  "release": "0.3.2-dev",
   "external_model_requests": 0,
   "real_tests": "deferred_by_user",
   "planned_real_runs": 252,
   "executed_real_runs": 0,
-  "runtime_server_version": "0.3.1-dev",
+  "runtime_server_version": "0.3.2-dev",
   "verification": {
-    "full_local_tests": 94,
-    "api_tests": 14,
+    "full_local_tests": 105,
+    "api_tests": 18,
+    "snapshot_tests": 7,
     "async_transport_tests": 9,
     "passed": true,
     "source_unchanged_during_checks": true,
@@ -29,21 +30,34 @@
     "script_runs": 180,
     "trace_replays": 60,
     "tool_replays": 60,
-    "heldout_browser_script_runs": 12,
-    "heldout_contract_pass": "12/12",
-    "heldout_complete_success": "9/12",
+    "browser_fixture_script_runs": 2,
+    "browser_synthetic_cancelled_runs": 2,
     "scaling_experiments": 106,
     "scaling_runs": 300,
     "scaling_events": 10000,
+    "large_payload_chunks": 74,
+    "large_payload_sha256_matches": true,
+    "polling_semantic_results_equal": true,
+    "polling_legacy_median_seconds": 0.2140175,
+    "polling_cached_median_seconds": 0.096803,
     "python_compile_passed": true,
     "javascript_syntax_passed": true,
     "evidence": [
-      "docs/LOCAL_VERIFICATION_V031.json",
-      "docs/SCALING_VERIFICATION_V031.json",
-      "docs/verification-summary-v0.3.1-offline.json",
-      "docs/UI_VERIFICATION_V031.json"
+      "docs/LOCAL_VERIFICATION_V032.json",
+      "docs/SCALING_VERIFICATION_V032.json",
+      "docs/POLLING_VERIFICATION_V032.json",
+      "docs/verification-summary-v0.3.2-offline.json",
+      "docs/UI_VERIFICATION_V032.json"
     ],
-    "scope": "Full local ASGI/mock checks, scripted regression, fixed pagination data, and local browser UI; no real provider"
+    "scope": "Local ASGI/mock regression, scripted and fixed-data checks, same-process polling comparison, browser UI on final service and earlier fixtures; no real provider"
+  },
+  "historical_verification": {
+    "release": "0.3.1-dev",
+    "full_local_tests": 94,
+    "heldout_browser_script_runs": 12,
+    "heldout_contract_pass": "12/12",
+    "heldout_complete_success": "9/12",
+    "evidence": "docs/UI_VERIFICATION_V031.json"
   },
   "pending_real_checks": [
     "6-case real API pilot",
@@ -53,8 +67,10 @@
   "known_limits": [
     "Cooperative file I/O cancellation",
     "Single execution process per data directory",
-    "Experiment summaries still scan all runs",
-    "Large event payload chunking not implemented"
+    "Cold/active snapshots scan all runs; warm reads check all report file states",
+    "Other execution writes conservatively invalidate snapshots",
+    "Payload parsing and integrity checks may read whole stored payloads",
+    "File-state caches are not continuous integrity monitoring"
   ],
   "approval_block": null
 }

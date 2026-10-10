@@ -32,7 +32,7 @@ def main():
                 "source_unchanged_during_checks":stable, "live_http_transports_blocked":True,
                 "attempted_live_http_transports":len(blocked), "external_model_requests":0,
                 "scope":"Core, API via ASGI TestClient, and simulated async transport; no real provider requests or GitHub Actions."}
-    (ROOT / "docs/LOCAL_VERIFICATION_V031.json").write_text(json.dumps(document, ensure_ascii=False, indent=2)+"\n",encoding="utf-8")
+    (ROOT / "docs/LOCAL_VERIFICATION_V032.json").write_text(json.dumps(document, ensure_ascii=False, indent=2)+"\n",encoding="utf-8")
     raise SystemExit(0 if document["passed"] else 1)
 
 

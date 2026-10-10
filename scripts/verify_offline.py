@@ -62,7 +62,7 @@ def main():
                   "evaluator_version": recovery["config"]["evaluator_version"],
                   "scope": "script baselines and harness only"}
         (directory / "acceptance.json").write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
-        (ROOT / "docs/verification-summary-v0.3.1-offline.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        (ROOT / "docs/verification-summary-v0.3.2-offline.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print(json.dumps(result, ensure_ascii=False, indent=2))
     finally:
         store.close()

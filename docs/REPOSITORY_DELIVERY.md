@@ -2,11 +2,13 @@
 
 2026-10-06（Asia/Shanghai）。用户授权推送现有项目，并要求不做占用 GitHub 额度的测试。
 
-仓库：[Halo021501/agent-failure-lab](https://github.com/Halo021501/agent-failure-lab)。可见性为 private，默认分支 main。首次源码交付为 0.3.0-dev，当前代码为 0.3.1-dev，真实模型验收仍未完成。
+仓库：[Halo021501/agent-failure-lab](https://github.com/Halo021501/agent-failure-lab)。可见性为 private，默认分支 main。首次源码交付为 0.3.0-dev，当前代码为 0.3.2-dev，真实模型验收仍未完成。
 
 2026-10-07 更新：按用户要求移除 GitHub 仓库名称中的 `03-`，本机目录保持原编号。`README.md`（中文）与 `README.en.md`（English）提供互相切换的完整版本；GitHub 和包简介采用中英对照，后续按 [项目约定](../AGENTS.md) 同步维护。此轮仅修改仓库标识和文档/元数据，不重跑测试，GitHub Actions 继续关闭。
 
 2026-10-08 更新：v0.3.1-dev 新增网页套件切换、损坏事件诊断和模型传输边界检查；94 项本地全量、180 次脚本运行、120 次回放及固定样本分页验收通过。记录见 [本版构建报告](BUILD_REPORT_V031.md)。双语 README 同步更新；仅运行本机检查，外部模型请求为 0，GitHub Actions 继续关闭。
+
+2026-10-11 更新：v0.3.2-dev 增加有界概览缓存和事件分段；105 项全量、180 次脚本运行、120 次回放、固定样本与同进程轮询对照、隔离浏览器验收通过。双语 README 同步维护，仓库描述中英对照。详见 [当前构建报告](BUILD_REPORT_V032.md)；真实模型请求 0，GitHub Actions 保持关闭。
 
 ## 推送范围
 
@@ -24,4 +26,4 @@
 
 这些结果见 [本轮构建报告](BUILD_REPORT_V02_V03.md)、[核心验证](CORE_VERIFICATION.json) 与 [离线摘要](verification-summary-v0.3-offline.json)。本次推送未重跑测试，也不将历史结果当作最新 HTTP/异步传输或真实模型验收。
 
-旧阶段待完成的本地 API、异步模拟、大样本分页和新版界面已经在 v0.3.1-dev 核验，最新证据见本版报告。真实模型实验按用户要求暂停，实际执行 0/252。
+旧阶段待完成的本地 API、异步模拟、大样本分页和界面已经在 v0.3.1-dev 核验，v0.3.2-dev 再次验证并增加缓存与分段，最新证据见当前报告。真实模型实验按用户要求暂停，实际执行 0/252。

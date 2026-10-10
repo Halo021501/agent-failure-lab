@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "release": "0.3.2-dev",
+  "checked_at": "2026-10-10T16:36:50.312382+00:00",
+  "source_fingerprint": "2809de2be728f4265b715004dae6679f505be8661183939bc0c2de53ff791420",
+  "framework_fingerprint": "80fd5baa0849cc175cfa7a3eb7032cea425f57872ee1e3ed3995fe0e20c01538",
+  "tool_fingerprint": "f97badc8cc3654a60920849597334433ca58a704d1f3225f20ffe08693a34fe6",
+  "evaluator_fingerprint": "39f2e499e679d536a081e835e7363f21910a1655e40c2db680f8f24f7a4129cb",
+  "strategy_fingerprint": "b933c1e27606803915b5619fbce83598e303af42092d69638aeb698ebcf4bbba",
+  "runtime": {
+    "python": "3.12.5",
+    "platform": "win32"
+  },
+  "tests_run": 105,
+  "failures": 0,
+  "errors": 0,
+  "passed": true,
+  "source_unchanged_during_checks": true,
+  "live_http_transports_blocked": true,
+  "attempted_live_http_transports": 0,
+  "external_model_requests": 0,
+  "scope": "Core, API via ASGI TestClient, and simulated async transport; no real provider requests or GitHub Actions."
+}

@@ -5,6 +5,7 @@ let detailVersion=0, reportSignature="", lastEventSeq=0, eventCount=0;
 let experimentBefore=null, experimentHistory=[], runAfter=null, runHistory=[], nextRunAfter=null, moreExperiments=false;
 let modelSettings=null;
 let suiteNamespace="v1", suiteSelection=false, catalogVersion=0, catalogReady=false;
+let eventChunks=false, runSelectionVersion=0;
 const suiteLabels={v1:"原套件", "heldout-v1":"独立留出"};
 const strategyLabels={recovery:"有限恢复脚本","no-recovery":"无恢复脚本","model-minimal":"模型 · 最小提示词","model-recovery":"模型 · 有限恢复提示词"};
 const labels={normal:"正常",T:"超时",M:"缺文件",S:"格式错误",E:"空结果",D:"重复响应",combined:"组合"};
@@ -21,7 +22,7 @@ function message(text,error=false){$("message").textContent=text;$("message").cl
 async function api(path,body){const response=await fetch(path,body===undefined?{}:{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const result=await response.json();if(!response.ok)throw new Error(typeof result.detail==="string"?result.detail:JSON.stringify(result.detail));return result;}
 async function action(work){try{await work();}catch(error){message(error.message,true);}}
 function navigate(next){page=next;document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===next));["cases","experiments","compare"].forEach(p=>$("page-"+p).hidden=p!==next);}
-function resetRun(id){if(id===currentRun)return;currentRun=id;detailVersion++;reportSignature="";lastEventSeq=0;eventCount=0;$("events-list").replaceChildren();$("evidence-dialog").close();}
+function resetRun(id){if(id===currentRun)return;currentRun=id;detailVersion++;runSelectionVersion++;reportSignature="";lastEventSeq=0;eventCount=0;$("events-list").replaceChildren();$("evidence-dialog").close();}
 function percent(v){return v==null?"N/A":(v*100).toFixed(1)+"%";}
 function checkLabel(name){return checkLabels[name]||(name.startsWith("gap_")?(groups[name.slice(4)]||"资料")+"缺口证据":name.startsWith("feature_citation_")?"功能引用 "+(Number(name.split("_").pop())+1):name.startsWith("issue_citation_")?"问题引用 "+(Number(name.split("_").pop())+1):"报告验收");}
 function experimentLabel(e){return e.id.slice(0,8)+" · "+(strategyLabels[e.config.strategy]||e.config.strategy)+" · "+e.config.case_ids.length+" 案例 · "+(modes[e.config.mode]||e.config.mode);}
@@ -151,10 +152,28 @@ async function showRun(id){
 }
 function eventNode(event){
   const node=el("details",undefined,"event"+(event.kind.includes("error")||event.kind==="fault_activated"||event.kind==="event_corrupt"?" error":""));node.id="event-"+event.seq;
-  const heading=el("summary");heading.append(el("span",String(event.seq).padStart(3,"0"),"time"),el("span",eventLabels[event.kind]||event.kind));node.append(heading,el("pre",JSON.stringify(event.payload,null,2)));return node;
+  const heading=el("summary");heading.append(el("span",String(event.seq).padStart(3,"0"),"time"),el("span",eventLabels[event.kind]||event.kind));node.append(heading);
+  if(!event.payload_sha256){node.append(el("pre",JSON.stringify(event.payload,null,2)));return node;}
+  const runId=currentRun,selection=runSelectionVersion,body=el("pre",event.payload_preview+(event.payload_truncated?"\n… 展开后按段查看":""));
+  const controls=el("div",undefined,"event-payload-controls"),previous=el("button","上一段"),next=el("button","下一段"),meta=el("small","预览 · 共 "+event.payload_chars+" 个字符"),error=el("p","","bad");
+  let offset=0,nextOffset=null,loaded=false,busy=false;
+  previous.disabled=next.disabled=true;error.setAttribute("role","status");controls.append(previous,next,meta);node.append(body,controls,error);
+  const relevant=()=>runId===currentRun&&selection===runSelectionVersion&&node.isConnected;
+  async function load(offsetRequested){
+    if(busy||!relevant())return;busy=true;previous.disabled=next.disabled=true;error.textContent="";
+    try{
+      const result=await api("/api/runs/"+runId+"/events/"+event.seq+"/payload?"+new URLSearchParams({sha256:event.payload_sha256,offset:offsetRequested,limit:4096}));
+      if(!relevant())return;
+      offset=result.offset;nextOffset=result.next_offset;loaded=true;body.textContent=result.text;
+      meta.textContent="字符 "+(offset+1)+"—"+(nextOffset??result.total_chars)+" / "+result.total_chars+" · 每段最多 4096";
+    }catch(problem){if(relevant())error.textContent=problem.message;}
+    finally{busy=false;if(relevant()){previous.disabled=!loaded||offset===0;next.disabled=!loaded||nextOffset===null;}}
+  }
+  previous.onclick=()=>load(Math.max(0,offset-4096));next.onclick=()=>load(nextOffset);
+  node.ontoggle=()=>{if(node.open&&!loaded)load(0);};return node;
 }
 async function loadEvents(id,version){
-  const events=await api("/api/runs/"+id+"/events?after_seq="+lastEventSeq+"&limit=100");
+  const events=await api("/api/runs/"+id+"/events?after_seq="+lastEventSeq+"&limit=100"+(eventChunks?"&preview=true":""));
   if(id!==currentRun||version!==detailVersion)return;
   events.forEach(event=>{if(event.seq>lastEventSeq){if(!$("event-"+event.seq)){$("events-list").append(eventNode(event));eventCount++;}lastEventSeq=event.seq;}});
   $("more-events").disabled=events.length<100;$("more-events").textContent="加载后续事件 · 已显示 "+eventCount+" 条";
@@ -168,7 +187,7 @@ async function showEvidence(runId,ref){
   let selected;
   if(ref.locator.kind==="json"){try{selected=JSON.parse(result.content);for(const part of ref.locator.pointer.split("/").slice(1))selected=selected[part];}catch{selected="定位不可用";}lines.append(el("pre",JSON.stringify(selected,null,2),"selected-snippet"));}
   result.content.split("\n").forEach((line,index)=>{const row=el("div",undefined,"source-line");if(index+1===(ref.locator.line||ref.locator.row))row.classList.add("selected-snippet");row.append(el("span",String(index+1),"line-number"),el("code",line));lines.append(row);});
-  $("evidence-event").onclick=()=>action(async()=>{const events=await api("/api/runs/"+runId+"/events?after_seq="+(result.event_seq-1)+"&limit=1");if(runId!==currentRun)return;$("evidence-dialog").close();$("show-events").click();let node=$("event-"+result.event_seq);if(!node&&events.length){node=eventNode(events[0]);$("events-list").prepend(node);}if(node){node.open=true;node.scrollIntoView({block:"center",behavior:"smooth"});}});
+  $("evidence-event").onclick=()=>action(async()=>{const events=await api("/api/runs/"+runId+"/events?after_seq="+(result.event_seq-1)+"&limit=1"+(eventChunks?"&preview=true":""));if(runId!==currentRun)return;$("evidence-dialog").close();$("show-events").click();let node=$("event-"+result.event_seq);if(!node&&events.length){node=eventNode(events[0]);$("events-list").prepend(node);}if(node){node.open=true;node.scrollIntoView({block:"center",behavior:"smooth"});}});
   if(!$("evidence-dialog").open)$("evidence-dialog").showModal();
 }
 $("close-evidence").onclick=()=>$("evidence-dialog").close();
@@ -216,6 +235,7 @@ action(async()=>{
   const status=await api("/api/status");$("service-version").textContent=status.version;
   $("tool-budget").value=status.defaults.max_tool_calls;$("wall-budget").value=status.defaults.wall_seconds;$("model-call-budget").value=status.defaults.max_model_calls;
   suiteSelection=(status.capabilities||[]).includes("suite_selection");
+  eventChunks=(status.capabilities||[]).includes("event_payload_chunks");
   if(suiteSelection){const inventory=await api("/api/suites");$("suite-select").replaceChildren();inventory.suites.forEach(s=>{const option=el("option",(suiteLabels[s.namespace]||s.namespace)+" · "+s.count+" 案例");option.value=s.namespace;$("suite-select").append(option);});suiteNamespace=inventory.default;$("suite-select").disabled=false;}
   await loadCatalog(suiteNamespace);await loadExperiments();
   if(status.version==="0.2.0"){$("agent-kind").querySelector('option[value="model"]').disabled=true;$("model-config-state").textContent="新适配代码已保存，重启服务后启用模型接口";$("save-model-config").disabled=true;}else showModelSettings(await api("/api/model-config"));

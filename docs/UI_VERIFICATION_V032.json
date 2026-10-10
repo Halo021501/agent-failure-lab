@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "checked_date": "2026-10-11",
+  "timezone": "Asia/Shanghai",
+  "release": "0.3.2-dev",
+  "source_fingerprint": "2809de2be728f4265b715004dae6679f505be8661183939bc0c2de53ff791420",
+  "framework_fingerprint": "80fd5baa0849cc175cfa7a3eb7032cea425f57872ee1e3ed3995fe0e20c01538",
+  "tool_fingerprint": "f97badc8cc3654a60920849597334433ca58a704d1f3225f20ffe08693a34fe6",
+  "evaluator_fingerprint": "39f2e499e679d536a081e835e7363f21910a1655e40c2db680f8f24f7a4129cb",
+  "strategy_fingerprint": "b933c1e27606803915b5619fbce83598e303af42092d69638aeb698ebcf4bbba",
+  "runtime": {
+    "python": "3.12.5",
+    "platform": "win32"
+  },
+  "passed": true,
+  "runtime_url": "http://127.0.0.1:8767/",
+  "qa_url": "http://127.0.0.1:8782/",
+  "fixture_directory": "E:\\Fun projects\\03-agent-failure-lab\\data\\verification\\ui-v032-161f1197",
+  "fixture_source_fingerprint": "e934f42d604ab9b75fe4cfcbb376dca1f4589b0c9f09abc3d25517da8552b17b",
+  "fixture_script_runs": 2,
+  "fixture_model_requests": 0,
+  "fixtures": {
+    "v1": {
+      "experiment_id": "513224f1405340328e46c877833663fc",
+      "run_id": "9840cf8fe94d4271a4ecdad50271b6ec",
+      "contract_pass": true
+    },
+    "heldout-v1": {
+      "experiment_id": "8329d48785604b34ad0b8cadda49661e",
+      "run_id": "68a64f88887e4be2b4b7cc58e47db6ae",
+      "contract_pass": true
+    },
+    "large": {
+      "experiment_id": "14ad1b8fa83f4b4e8be5788fadd87ec4",
+      "run_id": "4a63faa83be34ee9bc3c8f6a0e12be75",
+      "seq": 1,
+      "scope": "Synthetic cancelled fixture, excluded from ability scores"
+    },
+    "corrupt": {
+      "experiment_id": "c453c7e8625d45e5b88cae3537f20cb0",
+      "run_id": "3f5c22caea8841089d7aaa96fb07fad5",
+      "seq": 1,
+      "scope": "Synthetic cancelled fixture, excluded from ability scores"
+    }
+  },
+  "checks": {
+    "first_and_second_chunk_codepoints": 4096,
+    "previous_next_replace_text": true,
+    "run_switch_resets_payload": true,
+    "original_and_heldout_reports": true,
+    "evidence_jump_seq": 9,
+    "evidence_payload_source": "primary-release",
+    "corrupt_diagnostic_visible": true,
+    "corrupt_not_scored": true,
+    "browser_console_errors": 0
+  },
+  "viewport": {
+    "width": 768,
+    "height": 960,
+    "client_width": 753,
+    "scroll_width": 753,
+    "override_reset": true
+  },
+  "screenshots": [
+    "docs/screenshots/v032-event-chunks.png",
+    "docs/screenshots/v032-event-768.png"
+  ],
+  "scope": "Final browser/server against earlier development fixtures, including scripted and synthetic cancelled records; no model capability claim"
+}

@@ -4,10 +4,13 @@ import shutil
 import sqlite3
 import threading
 import uuid
+from collections import OrderedDict
+from copy import deepcopy
 from contextlib import closing
 from datetime import datetime, timezone
 from pathlib import Path
 from .common import canonical, confined, content_hash, digest, Halt, LabError, NotFound
+from .compare import summary
 
 ACTIVE = {"pending", "running"}
 TERMINAL = {"completed", "failed", "budget_exceeded", "cancelled", "interrupted"}
@@ -27,6 +30,9 @@ class Store:
         self.directory.mkdir(parents=True, exist_ok=True)
         self.lock = threading.RLock()
         self.cache = {}
+        self.experiment_cache = OrderedDict()
+        self.experiment_cache_hits = 0
+        self.experiment_cache_misses = 0
         self.validation_writes = 0
         self.commit_hook = None
         self.db = sqlite3.connect(self.directory / "lab.db", check_same_thread=False)
@@ -195,12 +201,66 @@ class Store:
 
     def experiment_info(self, experiment_id, force=False):
         with self.lock:
-            row = self.db.execute("SELECT * FROM experiments WHERE id=?", (experiment_id,)).fetchone()
-            if not row:
-                raise NotFound("实验不存在")
-            ids = self.db.execute("SELECT id FROM runs WHERE experiment_id=? ORDER BY case_id,json_extract(metadata,'$.seed'),id", (experiment_id,)).fetchall()
-            return {"id": experiment_id, "config": json.loads(row["config"]), "created_at": row["created_at"],
-                    "runs": [self.run(r["id"], force=force) for r in ids]}
+            return deepcopy(self._experiment_snapshot(experiment_id, force))
+
+    def _experiment_signature(self, experiment_id):
+        rows = self.db.execute("""SELECT r.id,r.status,a.path FROM runs r LEFT JOIN artifacts a
+            ON a.run_id=r.id AND a.id='report' WHERE r.experiment_id=? ORDER BY r.id""", (experiment_id,)).fetchall()
+        base = self.directory.resolve()
+        files = []
+        for row in rows:
+            path = (base / (row["path"] or "runs/" + row["id"] + "/report.json")).resolve()
+            if not path.is_relative_to(base):
+                raise ValueError("Path is outside its permitted directory")
+            try:
+                stat = path.stat()
+                signature = (stat.st_mtime_ns, stat.st_ctime_ns, stat.st_size, stat.st_ino)
+            except OSError:
+                signature = None
+            files.append((row["id"], signature))
+        return ((self.db.total_changes - self.validation_writes,
+                 self.db.execute("PRAGMA data_version").fetchone()[0], tuple(files)),
+                bool(rows) and all(row["status"] in TERMINAL for row in rows))
+
+    def _experiment_snapshot(self, experiment_id, force=False):
+        # Called only under the store lock; callers never receive the cached object.
+        if force:
+            self.experiment_cache.pop(experiment_id, None)
+        key, terminal = self._experiment_signature(experiment_id)
+        cached = self.experiment_cache.get(experiment_id)
+        if not force and terminal and cached and cached[0] == key:
+            self.experiment_cache_hits += 1
+            self.experiment_cache.move_to_end(experiment_id)
+            return cached[1]
+        self.experiment_cache_misses += 1
+        self.experiment_cache.pop(experiment_id, None)
+        row = self.db.execute("SELECT * FROM experiments WHERE id=?", (experiment_id,)).fetchone()
+        if not row:
+            raise NotFound("实验不存在")
+        ids = self.db.execute("SELECT id FROM runs WHERE experiment_id=? ORDER BY case_id,json_extract(metadata,'$.seed'),id", (experiment_id,)).fetchall()
+        result = {"id": experiment_id, "config": json.loads(row["config"]), "created_at": row["created_at"],
+                  "runs": [self.run(r["id"], force=force) for r in ids]}
+        result["summary"] = summary(result["runs"])
+        final_key, final_terminal = self._experiment_signature(experiment_id)
+        if not force and terminal and final_terminal and key == final_key and len(ids) <= 600:
+            self.experiment_cache[experiment_id] = (final_key, result)
+            while len(self.experiment_cache) > 8:
+                self.experiment_cache.popitem(last=False)
+        return result
+
+    def experiment_page(self, experiment_id, limit=50, after=None):
+        if not 1 <= limit <= 100:
+            raise ValueError("每页运行数量应为 1—100")
+        with self.lock:
+            snapshot = self._experiment_snapshot(experiment_id)
+            ids = [r["id"] for r in snapshot["runs"]]
+            if after and after not in ids:
+                raise NotFound("运行游标不属于本实验")
+            start = ids.index(after) + 1 if after else 0
+            page = snapshot["runs"][start:start + limit]
+            return deepcopy({"id": snapshot["id"], "config": snapshot["config"], "created_at": snapshot["created_at"],
+                             "summary": snapshot["summary"], "run_count": len(ids), "runs": page,
+                             "next_run_after": page[-1]["id"] if start + limit < len(ids) else None})
 
     def _create_run(self, experiment_id, case_id, metadata):
         run_id = uuid.uuid4().hex
@@ -287,6 +347,9 @@ class Store:
                 if state != "valid" and (not old or old["state"] != state or old["reason"] != reason):
                     self._audit(run_id, "integrity_check", result)
             self.validation_writes += self.db.total_changes - changes_before
+            if force and (not cached or any(cached[1].get(field) != result.get(field)
+                                           for field in ("state", "reason", "artifact_sha", "trace_sha"))):
+                self.experiment_cache.pop(run["experiment_id"], None)
             cache_key = (self.db.total_changes - self.validation_writes, self.db.execute("PRAGMA data_version").fetchone()[0],
                          signature, seal, run["status"])
             self.cache[run_id] = (cache_key, result)
@@ -335,7 +398,7 @@ class Store:
         with self.lock, self.db:
             return self._event(run_id, kind, payload)
 
-    def events(self, run_id, after_seq=0, limit=None, tolerant=False):
+    def events(self, run_id, after_seq=0, limit=None, tolerant=False, preview=False):
         with self.lock:
             sql = "SELECT * FROM events WHERE run_id=? AND seq>? ORDER BY seq"
             params = [run_id, after_seq]
@@ -346,20 +409,49 @@ class Store:
                 params.append(limit)
             result = []
             for row in self.db.execute(sql, params):
+                malformed = False
                 try:
                     payload = json.loads(row["payload"])
                     if not isinstance(payload, dict):
                         raise ValueError("事件载荷应为对象")
                     event = {"seq": row["seq"], "kind": row["kind"], "payload": payload, "created_at": row["created_at"]}
                 except (ValueError, TypeError):
+                    malformed = True
                     if not tolerant:
                         raise LabError("invalid_trace", f"事件 #{row['seq']} 的记录格式损坏") from None
                     event = {"seq": row["seq"], "kind": "event_corrupt", "created_at": row["created_at"],
                              "payload": {"code": "invalid_trace", "original_kind": row["kind"],
                                          "raw_sha256": content_hash(row["payload"]),
                                          "message": "原事件载荷损坏；仅显示诊断，不作为有效执行证据"}}
+                if preview and not malformed:
+                    raw = row["payload"]
+                    event.pop("payload")
+                    event.update(payload_preview=raw[:512], payload_chars=len(raw), payload_sha256=content_hash(raw),
+                                 payload_truncated=len(raw) > 512)
                 result.append(event)
             return result
+
+    def event_payload(self, run_id, seq, sha256, offset=0, limit=4096):
+        if seq < 1 or offset < 0 or not 1 <= limit <= 4096:
+            raise ValueError("事件序号、偏移或分段大小无效")
+        with self.lock:
+            row = self.db.execute("SELECT payload FROM events WHERE run_id=? AND seq=?", (run_id, seq)).fetchone()
+            if not row:
+                raise NotFound("事件不存在")
+            raw = row["payload"]
+            try:
+                if not isinstance(json.loads(raw), dict):
+                    raise ValueError("事件载荷应为对象")
+            except (ValueError, TypeError):
+                raise LabError("invalid_trace", "事件载荷损坏，仅可查看诊断") from None
+            actual = content_hash(raw)
+            if actual != sha256:
+                raise LabError("payload_changed", "事件载荷已变化，请刷新运行后重新查看")
+            if offset > len(raw):
+                raise ValueError("偏移超出事件载荷范围")
+            end = min(offset + limit, len(raw))
+            return {"seq": seq, "sha256": actual, "offset": offset, "next_offset": end if end < len(raw) else None,
+                    "total_chars": len(raw), "text": raw[offset:end]}
 
     def _commit_index(self, run_id, key, sha, path):
         with self.db:

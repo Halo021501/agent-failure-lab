@@ -12,6 +12,7 @@ from fastapi.testclient import TestClient
 from lab.app import create_app
 from lab import __version__
 from lab.provenance import fingerprints
+from lab.common import content_hash
 
 
 def main():
@@ -50,16 +51,37 @@ def main():
             if not after:
                 break
         assert len(ids) == len(set(ids)) == 300
+        for _ in range(5):
+            timed("/api/experiments/" + experiment_id + "?limit=50")
         first_events = timed("/api/runs/" + probe_id + "/events?limit=100")
         last_events = timed("/api/runs/" + probe_id + "/events?after_seq=9900&limit=100")
         assert len(first_events) == len(last_events) == 100
         assert (first_events[0]["seq"],last_events[-1]["seq"]) == (1,10000)
+        payload = {"content":"资料🙂" * 100000}
+        seq = store.event(probe_id, "large_payload_probe", payload)
+        legacy = timed("/api/runs/" + probe_id + "/events?after_seq=10000&limit=1")
+        preview = timed("/api/runs/" + probe_id + "/events?after_seq=10000&limit=1&preview=true")[0]
+        assert len(preview["payload_preview"]) == 512 and "payload" not in preview
+        chunks, offset, chunk_bytes_max = [], 0, 0
+        while offset is not None:
+            response = client.get(f"/api/runs/{probe_id}/events/{seq}/payload", params={"sha256":preview["payload_sha256"],"offset":offset})
+            assert response.status_code == 200, response.text
+            part = response.json()
+            assert len(part["text"]) <= 4096
+            chunk_bytes_max = max(chunk_bytes_max, len(response.content))
+            chunks.append(part["text"])
+            offset = part["next_offset"]
+        joined = "".join(chunks)
+        assert content_hash(joined) == preview["payload_sha256"] and json.loads(joined) == legacy[0]["payload"]
         assert provenance["source_fingerprint"] == fingerprints()["source_fingerprint"], "Source changed during verification"
         result = {"release":__version__, **provenance, "passed":True, "source_unchanged_during_checks":True,
                   "data_directory":str(directory),"python":platform.python_version(),
                   "platform":platform.platform(),"experiment_count":106,"completed_runs":300,
-                  "run_pages":pages,"event_count":10000,"measurements":measurements,"model_requests":0}
-        output = ROOT / "docs/SCALING_VERIFICATION_V031.json"
+                  "run_pages":pages,"event_count":10000,"measurements":measurements,"model_requests":0,
+                  "snapshot_cache_hits":store.experiment_cache_hits,"snapshot_cache_misses":store.experiment_cache_misses,
+                  "large_payload":{"chars":len(joined),"utf8_bytes":len(joined.encode("utf-8")),"chunks":len(chunks),
+                                   "chunk_response_bytes_max":chunk_bytes_max,"reassembled_sha256_matches":True}}
+        output = ROOT / "docs/SCALING_VERIFICATION_V032.json"
         output.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         print(json.dumps(result,ensure_ascii=False,indent=2))
 

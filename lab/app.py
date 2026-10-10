@@ -2,7 +2,7 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI, Request, Query
+from fastapi import FastAPI, Request, Query, Path as ApiPath
 from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, ConfigDict, Field, StrictInt
@@ -98,19 +98,7 @@ def create_app(directory=ROOT / "data/runtime", namespace="v1"):
         return JSONResponse({"detail": str(error), "code": error.code}, status_code=409)
 
     def info(experiment_id, limit=50, after=None):
-        result = store.experiment_info(experiment_id)
-        result["summary"] = summary(result["runs"])
-        result["run_count"] = len(result["runs"])
-        start = 0
-        if after:
-            ids = [r["id"] for r in result["runs"]]
-            if after not in ids:
-                raise NotFound("运行游标不属于本实验")
-            start = ids.index(after) + 1
-        all_runs = result["runs"]
-        result["runs"] = all_runs[start:start + limit]
-        result["next_run_after"] = result["runs"][-1]["id"] if start + limit < len(all_runs) else None
-        return result
+        return store.experiment_page(experiment_id, limit, after)
 
     @app.get("/")
     def index():
@@ -125,7 +113,7 @@ def create_app(directory=ROOT / "data/runtime", namespace="v1"):
     @app.get("/api/status")
     def status():
         return {"version": __version__, "model_configured": runner.configured_model().public()["configured"], "agent_kind": "script",
-                "suite_namespace": namespace, "capabilities": ["suite_selection", "corrupt_event_diagnostics"],
+                "suite_namespace": namespace, "capabilities": ["suite_selection", "corrupt_event_diagnostics", "event_payload_chunks", "experiment_snapshot_cache"],
                 "suite": runner.suite.version, "suite_hash": runner.suite.hash,
                 "case_count": len(runner.suite.cases), "queue_pending": store.pending_count(),
                 "defaults": configured_budget().to_dict()}
@@ -191,9 +179,17 @@ def create_app(directory=ROOT / "data/runtime", namespace="v1"):
         return result
 
     @app.get("/api/runs/{run_id}/events")
-    def events(run_id: str, after_seq: int = Query(0, ge=0), limit: int = Query(100, ge=1, le=200)):
+    def events(run_id: str, after_seq: int = Query(0, ge=0), limit: int = Query(100, ge=1, le=200), preview: bool = False):
         store.run(run_id)
-        return store.events(run_id, after_seq, limit, tolerant=True)
+        return store.events(run_id, after_seq, limit, tolerant=True, preview=preview)
+
+    @app.get("/api/runs/{run_id}/events/{seq}/payload")
+    def event_payload(run_id: str, seq: int = ApiPath(ge=1), sha256: str = Query(pattern="^[0-9a-f]{64}$"),
+                      offset: int = Query(0, ge=0), limit: int = Query(4096, ge=1, le=4096)):
+        run = store.run(run_id)
+        if run["integrity"]["state"] == "invalid":
+            raise LabError(run["integrity"]["reason"], "记录完整性异常，仅可查看事件预览与诊断")
+        return store.event_payload(run_id, seq, sha256, offset, limit)
 
     @app.get("/api/runs/{run_id}/evidence")
     def evidence(run_id: str, source_id: str, sha256: str):
