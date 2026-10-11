@@ -1,0 +1,53 @@
+{
+  "release": "0.3.3-dev",
+  "source_fingerprint": "45e30912722fce001d4ec45b7836e7a66c53c302a31434535d714f58d808d176",
+  "framework_fingerprint": "120b04eeb5bf3cd515c03cb8fbe9433f436175a692333dcd7ebc9c741e1a6305",
+  "tool_fingerprint": "f97badc8cc3654a60920849597334433ca58a704d1f3225f20ffe08693a34fe6",
+  "evaluator_fingerprint": "39f2e499e679d536a081e835e7363f21910a1655e40c2db680f8f24f7a4129cb",
+  "strategy_fingerprint": "b933c1e27606803915b5619fbce83598e303af42092d69638aeb698ebcf4bbba",
+  "runtime": {
+    "python": "3.12.5",
+    "platform": "win32"
+  },
+  "passed": true,
+  "source_unchanged_during_checks": true,
+  "data_directory": "E:\\Fun projects\\03-agent-failure-lab\\data\\verification\\scaling-eac72889",
+  "experiment_id": "25816f471c73469d815aed77e72ac122",
+  "runs": 300,
+  "page_size": 50,
+  "samples_per_path": 10,
+  "alternating_measurement_order": true,
+  "selected_run_force_check": true,
+  "cold_snapshot_seconds": 1.841454,
+  "legacy_scan_seconds": [
+    0.307771,
+    0.264188,
+    0.446803,
+    0.640116,
+    0.639234,
+    0.599092,
+    0.619759,
+    0.629231,
+    0.588992,
+    0.900255
+  ],
+  "cached_page_seconds": [
+    0.14529,
+    0.127104,
+    0.308762,
+    0.318504,
+    0.281488,
+    0.3141,
+    0.290271,
+    0.293731,
+    0.296448,
+    0.379076
+  ],
+  "legacy_median_seconds": 0.6094255,
+  "cached_median_seconds": 0.2950895,
+  "response_bytes": 220526,
+  "semantic_results_equal": true,
+  "snapshot_cache_hits": 10,
+  "external_model_requests": 0,
+  "scope": "Store and JSON serialization in one process on fixed data; not a general latency guarantee"
+}

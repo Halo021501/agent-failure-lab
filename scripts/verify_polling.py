@@ -15,7 +15,7 @@ from lab.storage import Store
 
 def main():
     provenance = fingerprints()
-    scaling = json.loads((ROOT / "docs/SCALING_VERIFICATION_V032.json").read_text(encoding="utf-8"))
+    scaling = json.loads((ROOT / "docs/SCALING_VERIFICATION_V033.json").read_text(encoding="utf-8"))
     assert scaling["source_fingerprint"] == provenance["source_fingerprint"]
     store = Store(Path(scaling["data_directory"]), recover=False)
     try:
@@ -57,7 +57,7 @@ def main():
                     "legacy_median_seconds":statistics.median(old_times),"cached_median_seconds":statistics.median(cached_times),
                     "response_bytes":bytes_count,"semantic_results_equal":True,"snapshot_cache_hits":store.experiment_cache_hits,
                     "external_model_requests":0,"scope":"Store and JSON serialization in one process on fixed data; not a general latency guarantee"}
-        (ROOT / "docs/POLLING_VERIFICATION_V032.json").write_text(json.dumps(document, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
+        (ROOT / "docs/POLLING_VERIFICATION_V033.json").write_text(json.dumps(document, ensure_ascii=False, indent=2)+"\n", encoding="utf-8")
         print(json.dumps(document, ensure_ascii=False, indent=2))
     finally:
         store.close()

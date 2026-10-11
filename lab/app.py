@@ -113,7 +113,7 @@ def create_app(directory=ROOT / "data/runtime", namespace="v1"):
     @app.get("/api/status")
     def status():
         return {"version": __version__, "model_configured": runner.configured_model().public()["configured"], "agent_kind": "script",
-                "suite_namespace": namespace, "capabilities": ["suite_selection", "corrupt_event_diagnostics", "event_payload_chunks", "experiment_snapshot_cache"],
+                "suite_namespace": namespace, "capabilities": ["suite_selection", "corrupt_event_diagnostics", "event_payload_chunks", "experiment_snapshot_cache", "scoped_cache_revisions", "payload_snapshot_cache"],
                 "suite": runner.suite.version, "suite_hash": runner.suite.hash,
                 "case_count": len(runner.suite.cases), "queue_pending": store.pending_count(),
                 "defaults": configured_budget().to_dict()}

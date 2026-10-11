@@ -1,0 +1,60 @@
+{
+  "release": "0.3.3-dev",
+  "source_fingerprint": "45e30912722fce001d4ec45b7836e7a66c53c302a31434535d714f58d808d176",
+  "framework_fingerprint": "120b04eeb5bf3cd515c03cb8fbe9433f436175a692333dcd7ebc9c741e1a6305",
+  "tool_fingerprint": "f97badc8cc3654a60920849597334433ca58a704d1f3225f20ffe08693a34fe6",
+  "evaluator_fingerprint": "39f2e499e679d536a081e835e7363f21910a1655e40c2db680f8f24f7a4129cb",
+  "strategy_fingerprint": "b933c1e27606803915b5619fbce83598e303af42092d69638aeb698ebcf4bbba",
+  "runtime": {
+    "python": "3.12.5",
+    "platform": "win32"
+  },
+  "passed": true,
+  "source_unchanged_during_checks": true,
+  "data_directory": "E:\\Fun projects\\03-agent-failure-lab\\data\\verification\\scaling-eac72889",
+  "experiment_id": "25816f471c73469d815aed77e72ac122",
+  "run_count": 300,
+  "other_experiment_write_samples": 5,
+  "global_snapshot_seconds": [
+    1.4974835000029998,
+    1.9735565000009956,
+    2.420113299987861,
+    1.769427799998084,
+    2.1080112000054214
+  ],
+  "scoped_snapshot_seconds": [
+    0.16284340000129305,
+    0.12433940000482835,
+    0.13619160000234842,
+    0.1792068999930052,
+    0.18862559999979567
+  ],
+  "global_snapshot_median": 1.9735565000009956,
+  "scoped_snapshot_median": 0.16284340000129305,
+  "global_snapshot_hits": 0,
+  "scoped_snapshot_hits": 5,
+  "snapshot_results_equal": true,
+  "chunk_pass_samples": 5,
+  "full_payload_seconds": [
+    0.2602015000011306,
+    0.2932868999923812,
+    0.317527399995015,
+    0.3331828000082169,
+    0.39982219999365043
+  ],
+  "cached_payload_seconds": [
+    0.0019138999923598021,
+    0.0020941999973729253,
+    0.0023919999948702753,
+    0.003996200000983663,
+    0.002536800006055273
+  ],
+  "full_payload_median": 0.317527399995015,
+  "cached_payload_median": 0.0023919999948702753,
+  "legacy_full_payload_reads": 370,
+  "new_full_payload_reads_during_warm_passes": 0,
+  "payload_texts_equal": true,
+  "database_schema": 3,
+  "external_model_requests": 0,
+  "scope": "Store and JSON serialization on fixed data; old global invalidation/full-payload paths simulated in this process, not a historical binary or network benchmark"
+}

@@ -14,6 +14,8 @@ from .compare import summary
 
 ACTIVE = {"pending", "running"}
 TERMINAL = {"completed", "failed", "budget_exceeded", "cancelled", "interrupted"}
+PAYLOAD_CACHE_BYTES = 4 * 1024 * 1024
+PAYLOAD_CACHE_ENTRIES = 32
 
 
 def now():
@@ -22,6 +24,30 @@ def now():
 
 def trace_hash(events):
     return digest([{"seq": e["seq"], "kind": e["kind"], "payload": e["payload"]} for e in events])
+
+
+def revision_triggers():
+    # All identifiers come from this fixed schema, never from user input.
+    def bump(scope, expression):
+        values = f"VALUES('{scope}',{expression},1)"
+        return ("INSERT INTO cache_revisions(scope,id,revision) " + values +
+                " ON CONFLICT(scope,id) DO UPDATE SET revision=revision+1;")
+    statements = []
+    for table in ("experiments", "runs", "events", "artifacts", "evaluations", "commits"):
+        for operation, refs in (("INSERT", ("NEW",)), ("UPDATE", ("OLD", "NEW")), ("DELETE", ("OLD",))):
+            body = []
+            for ref in refs:
+                if table == "experiments":
+                    body.append(bump("experiment", ref + ".id"))
+                elif table == "runs":
+                    body.extend((bump("run", ref + ".id"), bump("experiment", ref + ".experiment_id")))
+                else:
+                    body.append(bump("run", ref + ".run_id"))
+                    body.append("INSERT INTO cache_revisions(scope,id,revision) SELECT 'experiment',experiment_id,1 FROM runs " +
+                                "WHERE id=" + ref + ".run_id ON CONFLICT(scope,id) DO UPDATE SET revision=revision+1;")
+            statements.append(f"CREATE TRIGGER IF NOT EXISTS revision_{table}_{operation.lower()} AFTER {operation} ON {table} BEGIN " +
+                              " ".join(body) + " END;")
+    return "\n".join(statements)
 
 
 class Store:
@@ -33,22 +59,30 @@ class Store:
         self.experiment_cache = OrderedDict()
         self.experiment_cache_hits = 0
         self.experiment_cache_misses = 0
+        self.payload_cache = OrderedDict()
+        self.payload_cache_bytes = 0
+        self.payload_cache_hits = 0
+        self.payload_cache_misses = 0
         self.validation_writes = 0
         self.commit_hook = None
         self.db = sqlite3.connect(self.directory / "lab.db", check_same_thread=False)
         self.db.row_factory = sqlite3.Row
         self.db.execute("PRAGMA journal_mode=WAL")
         self.migration_backup = None
-        self._initialize()
-        if recover:
-            self.recover()
+        try:
+            self._initialize()
+            if recover:
+                self.recover()
+        except BaseException:
+            self.db.close()
+            raise
 
     def _initialize(self):
         version = self.db.execute("PRAGMA user_version").fetchone()[0]
-        if version > 2:
+        if version > 3:
             raise LabError("unsupported_database", "数据库版本高于当前程序支持的版本")
-        if version == 1:
-            backup = self.directory / "backups" / ("schema-v1-" + uuid.uuid4().hex[:8])
+        if version in (1, 2):
+            backup = self.directory / "backups" / (f"schema-v{version}-" + uuid.uuid4().hex[:8])
             backup.mkdir(parents=True)
             with closing(sqlite3.connect(backup / "lab.db")) as destination:
                 self.db.backup(destination)
@@ -77,7 +111,12 @@ class Store:
         CREATE INDEX IF NOT EXISTS runs_experiment ON runs(experiment_id,created_at,id);
         CREATE INDEX IF NOT EXISTS runs_status ON runs(status);
         CREATE INDEX IF NOT EXISTS evaluations_run ON evaluations(run_id,id);
-        PRAGMA user_version=2;
+        CREATE TABLE IF NOT EXISTS cache_revisions(scope TEXT NOT NULL,id TEXT NOT NULL,revision INTEGER NOT NULL,
+          PRIMARY KEY(scope,id));
+        INSERT OR IGNORE INTO cache_revisions SELECT 'run',id,1 FROM runs;
+        INSERT OR IGNORE INTO cache_revisions SELECT 'experiment',id,1 FROM experiments;
+        """ + revision_triggers() + """
+        PRAGMA user_version=3;
         COMMIT;
         """)
 
@@ -203,6 +242,10 @@ class Store:
         with self.lock:
             return deepcopy(self._experiment_snapshot(experiment_id, force))
 
+    def _revision(self, scope, identity):
+        row = self.db.execute("SELECT revision FROM cache_revisions WHERE scope=? AND id=?", (scope, identity)).fetchone()
+        return (row[0] if row else 0, self.db.execute("PRAGMA data_version").fetchone()[0])
+
     def _experiment_signature(self, experiment_id):
         rows = self.db.execute("""SELECT r.id,r.status,a.path FROM runs r LEFT JOIN artifacts a
             ON a.run_id=r.id AND a.id='report' WHERE r.experiment_id=? ORDER BY r.id""", (experiment_id,)).fetchall()
@@ -218,8 +261,7 @@ class Store:
             except OSError:
                 signature = None
             files.append((row["id"], signature))
-        return ((self.db.total_changes - self.validation_writes,
-                 self.db.execute("PRAGMA data_version").fetchone()[0], tuple(files)),
+        return ((self._revision("experiment", experiment_id), tuple(files)),
                 bool(rows) and all(row["status"] in TERMINAL for row in rows))
 
     def _experiment_snapshot(self, experiment_id, force=False):
@@ -306,7 +348,7 @@ class Store:
                 signature = (stat.st_mtime_ns, stat.st_ctime_ns, stat.st_size, stat.st_ino)
             except OSError:
                 signature = None
-            cache_key = (self.db.total_changes - self.validation_writes, self.db.execute("PRAGMA data_version").fetchone()[0],
+            cache_key = (self._revision("run", run_id),
                          signature, run["metadata"].get("events_sha256"), run["status"])
             cached = self.cache.get(run_id)
             if not force and cached and cached[0] == cache_key:
@@ -350,7 +392,7 @@ class Store:
             if force and (not cached or any(cached[1].get(field) != result.get(field)
                                            for field in ("state", "reason", "artifact_sha", "trace_sha"))):
                 self.experiment_cache.pop(run["experiment_id"], None)
-            cache_key = (self.db.total_changes - self.validation_writes, self.db.execute("PRAGMA data_version").fetchone()[0],
+            cache_key = (self._revision("run", run_id),
                          signature, seal, run["status"])
             self.cache[run_id] = (cache_key, result)
             return result
@@ -408,43 +450,69 @@ class Store:
                 sql += " LIMIT ?"
                 params.append(limit)
             result = []
-            for row in self.db.execute(sql, params):
-                malformed = False
+            source_revision = self._revision("run", run_id) if preview else None
+            for row in self.db.execute(sql, params).fetchall():
                 try:
-                    payload = json.loads(row["payload"])
-                    if not isinstance(payload, dict):
-                        raise ValueError("事件载荷应为对象")
-                    event = {"seq": row["seq"], "kind": row["kind"], "payload": payload, "created_at": row["created_at"]}
+                    if preview:
+                        _, raw, sha = self._payload_text(run_id, row["seq"], row["payload"], source_revision)
+                        event = {"seq": row["seq"], "kind": row["kind"], "created_at": row["created_at"],
+                                 "payload_preview": raw[:512], "payload_chars": len(raw), "payload_sha256": sha,
+                                 "payload_truncated": len(raw) > 512}
+                    else:
+                        payload = json.loads(row["payload"])
+                        if not isinstance(payload, dict):
+                            raise ValueError("事件载荷应为对象")
+                        event = {"seq": row["seq"], "kind": row["kind"], "payload": payload, "created_at": row["created_at"]}
                 except (ValueError, TypeError):
-                    malformed = True
                     if not tolerant:
                         raise LabError("invalid_trace", f"事件 #{row['seq']} 的记录格式损坏") from None
                     event = {"seq": row["seq"], "kind": "event_corrupt", "created_at": row["created_at"],
                              "payload": {"code": "invalid_trace", "original_kind": row["kind"],
                                          "raw_sha256": content_hash(row["payload"]),
                                          "message": "原事件载荷损坏；仅显示诊断，不作为有效执行证据"}}
-                if preview and not malformed:
-                    raw = row["payload"]
-                    event.pop("payload")
-                    event.update(payload_preview=raw[:512], payload_chars=len(raw), payload_sha256=content_hash(raw),
-                                 payload_truncated=len(raw) > 512)
                 result.append(event)
             return result
+
+    def _payload_text(self, run_id, seq, supplied=None, source_revision=None):
+        revision = self._revision("run", run_id)
+        current_source = supplied is None or source_revision == revision
+        identity = (run_id, seq)
+        cached = self.payload_cache.get(identity)
+        if current_source and cached and cached[0] == revision:
+            self.payload_cache.move_to_end(identity)
+            self.payload_cache_hits += 1
+            return cached[:3]
+        self.payload_cache_misses += 1
+        if cached:
+            self.payload_cache_bytes -= self.payload_cache.pop(identity)[3]
+        if supplied is None:
+            row = self.db.execute("SELECT payload FROM events WHERE run_id=? AND seq=?", (run_id, seq)).fetchone()
+            if not row:
+                raise NotFound("事件不存在")
+            supplied = row["payload"]
+        if not isinstance(json.loads(supplied), dict):
+            raise ValueError("事件载荷应为对象")
+        sha = content_hash(supplied)
+        # Python can use four bytes per code point. Bound retained text storage,
+        # conservatively counting at least UTF-8 bytes and the worst string width.
+        size = max(len(supplied.encode("utf-8")), len(supplied) * 4) + 256
+        if current_source and size <= PAYLOAD_CACHE_BYTES and revision == self._revision("run", run_id):
+            self.payload_cache[identity] = (revision, supplied, sha, size)
+            self.payload_cache_bytes += size
+            while len(self.payload_cache) > PAYLOAD_CACHE_ENTRIES or self.payload_cache_bytes > PAYLOAD_CACHE_BYTES:
+                self.payload_cache_bytes -= self.payload_cache.popitem(last=False)[1][3]
+        return revision, supplied, sha
 
     def event_payload(self, run_id, seq, sha256, offset=0, limit=4096):
         if seq < 1 or offset < 0 or not 1 <= limit <= 4096:
             raise ValueError("事件序号、偏移或分段大小无效")
         with self.lock:
-            row = self.db.execute("SELECT payload FROM events WHERE run_id=? AND seq=?", (run_id, seq)).fetchone()
-            if not row:
-                raise NotFound("事件不存在")
-            raw = row["payload"]
             try:
-                if not isinstance(json.loads(raw), dict):
-                    raise ValueError("事件载荷应为对象")
+                _, raw, actual = self._payload_text(run_id, seq)
+            except NotFound:
+                raise
             except (ValueError, TypeError):
                 raise LabError("invalid_trace", "事件载荷损坏，仅可查看诊断") from None
-            actual = content_hash(raw)
             if actual != sha256:
                 raise LabError("payload_changed", "事件载荷已变化，请刷新运行后重新查看")
             if offset > len(raw):

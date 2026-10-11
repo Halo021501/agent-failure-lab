@@ -14,7 +14,7 @@ from lab.storage import Store
 
 
 def main():
-    directory = ROOT / "data/verification" / ("ui-v032-" + uuid.uuid4().hex[:8])
+    directory = ROOT / "data/verification" / ("ui-v033-" + uuid.uuid4().hex[:8])
     store = Store(directory)
     result = {"release":__version__, **fingerprints(), "data_directory":str(directory), "model_requests":0}
     try:

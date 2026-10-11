@@ -79,9 +79,12 @@ def main():
                   "platform":platform.platform(),"experiment_count":106,"completed_runs":300,
                   "run_pages":pages,"event_count":10000,"measurements":measurements,"model_requests":0,
                   "snapshot_cache_hits":store.experiment_cache_hits,"snapshot_cache_misses":store.experiment_cache_misses,
+                  "database_schema":store.db.execute("PRAGMA user_version").fetchone()[0],
+                  "payload_cache_hits":store.payload_cache_hits,"payload_cache_misses":store.payload_cache_misses,
+                  "payload_cache_accounted_bytes":store.payload_cache_bytes,
                   "large_payload":{"chars":len(joined),"utf8_bytes":len(joined.encode("utf-8")),"chunks":len(chunks),
                                    "chunk_response_bytes_max":chunk_bytes_max,"reassembled_sha256_matches":True}}
-        output = ROOT / "docs/SCALING_VERIFICATION_V032.json"
+        output = ROOT / "docs/SCALING_VERIFICATION_V033.json"
         output.write_text(json.dumps(result,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
         print(json.dumps(result,ensure_ascii=False,indent=2))
 

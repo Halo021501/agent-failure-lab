@@ -1,0 +1,122 @@
+{
+  "release": "0.3.3-dev",
+  "source_fingerprint": "45e30912722fce001d4ec45b7836e7a66c53c302a31434535d714f58d808d176",
+  "framework_fingerprint": "120b04eeb5bf3cd515c03cb8fbe9433f436175a692333dcd7ebc9c741e1a6305",
+  "tool_fingerprint": "f97badc8cc3654a60920849597334433ca58a704d1f3225f20ffe08693a34fe6",
+  "evaluator_fingerprint": "39f2e499e679d536a081e835e7363f21910a1655e40c2db680f8f24f7a4129cb",
+  "strategy_fingerprint": "b933c1e27606803915b5619fbce83598e303af42092d69638aeb698ebcf4bbba",
+  "runtime": {
+    "python": "3.12.5",
+    "platform": "win32"
+  },
+  "passed": true,
+  "source_unchanged_during_checks": true,
+  "data_directory": "E:\\Fun projects\\03-agent-failure-lab\\data\\verification\\scaling-eac72889",
+  "python": "3.12.5",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "experiment_count": 106,
+  "completed_runs": 300,
+  "run_pages": 6,
+  "event_count": 10000,
+  "measurements": [
+    {
+      "path": "/api/experiments?limit=50",
+      "seconds": 0.0108,
+      "bytes": 51633
+    },
+    {
+      "path": "/api/experiments?limit=100&before=e692dfd2df3547cfa8a6d49137dbaa54",
+      "seconds": 0.0085,
+      "bytes": 57569
+    },
+    {
+      "path": "/api/experiments/25816f471c73469d815aed77e72ac122?limit=50",
+      "seconds": 0.3122,
+      "bytes": 220526
+    },
+    {
+      "path": "/api/experiments/25816f471c73469d815aed77e72ac122?limit=50&after=2c346e568d334f13903b33e38ecc55db",
+      "seconds": 0.2908,
+      "bytes": 217592
+    },
+    {
+      "path": "/api/experiments/25816f471c73469d815aed77e72ac122?limit=50&after=5cedf76196274784bb3d7bfdc802841e",
+      "seconds": 0.3206,
+      "bytes": 217272
+    },
+    {
+      "path": "/api/experiments/25816f471c73469d815aed77e72ac122?limit=50&after=eda5d46c72a549019951cb0f2641cf9f",
+      "seconds": 0.3139,
+      "bytes": 219158
+    },
+    {
+      "path": "/api/experiments/25816f471c73469d815aed77e72ac122?limit=50&after=02088d7bdd42406e93256fb031c00610",
+      "seconds": 0.3225,
+      "bytes": 218520
+    },
+    {
+      "path": "/api/experiments/25816f471c73469d815aed77e72ac122?limit=50&after=59c1698a65f24183a709b801796051fd",
+      "seconds": 0.3323,
+      "bytes": 220779
+    },
+    {
+      "path": "/api/experiments/25816f471c73469d815aed77e72ac122?limit=50",
+      "seconds": 0.4371,
+      "bytes": 220526
+    },
+    {
+      "path": "/api/experiments/25816f471c73469d815aed77e72ac122?limit=50",
+      "seconds": 0.3766,
+      "bytes": 220526
+    },
+    {
+      "path": "/api/experiments/25816f471c73469d815aed77e72ac122?limit=50",
+      "seconds": 0.3677,
+      "bytes": 220526
+    },
+    {
+      "path": "/api/experiments/25816f471c73469d815aed77e72ac122?limit=50",
+      "seconds": 0.2977,
+      "bytes": 220526
+    },
+    {
+      "path": "/api/experiments/25816f471c73469d815aed77e72ac122?limit=50",
+      "seconds": 0.3134,
+      "bytes": 220526
+    },
+    {
+      "path": "/api/runs/2406202b64904a949aced6de4ede2409/events?limit=100",
+      "seconds": 0.005,
+      "bytes": 10583
+    },
+    {
+      "path": "/api/runs/2406202b64904a949aced6de4ede2409/events?after_seq=9900&limit=100",
+      "seconds": 0.0046,
+      "bytes": 11002
+    },
+    {
+      "path": "/api/runs/2406202b64904a949aced6de4ede2409/events?after_seq=10000&limit=1",
+      "seconds": 0.0119,
+      "bytes": 1000117
+    },
+    {
+      "path": "/api/runs/2406202b64904a949aced6de4ede2409/events?after_seq=10000&limit=1&preview=true",
+      "seconds": 0.0098,
+      "bytes": 1926
+    }
+  ],
+  "model_requests": 0,
+  "snapshot_cache_hits": 11,
+  "snapshot_cache_misses": 3,
+  "database_schema": 3,
+  "payload_cache_hits": 74,
+  "payload_cache_misses": 1,
+  "payload_cache_accounted_bytes": 1200312,
+  "large_payload": {
+    "chars": 300014,
+    "utf8_bytes": 1000014,
+    "chunks": 74,
+    "chunk_response_bytes_max": 13811,
+    "reassembled_sha256_matches": true
+  }
+}

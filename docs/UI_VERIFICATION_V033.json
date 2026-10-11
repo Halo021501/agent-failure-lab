@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "checked_date": "2026-10-11",
+  "timezone": "Asia/Shanghai",
+  "release": "0.3.3-dev",
+  "source_fingerprint": "45e30912722fce001d4ec45b7836e7a66c53c302a31434535d714f58d808d176",
+  "framework_fingerprint": "120b04eeb5bf3cd515c03cb8fbe9433f436175a692333dcd7ebc9c741e1a6305",
+  "tool_fingerprint": "f97badc8cc3654a60920849597334433ca58a704d1f3225f20ffe08693a34fe6",
+  "evaluator_fingerprint": "39f2e499e679d536a081e835e7363f21910a1655e40c2db680f8f24f7a4129cb",
+  "strategy_fingerprint": "b933c1e27606803915b5619fbce83598e303af42092d69638aeb698ebcf4bbba",
+  "runtime": {
+    "python": "3.12.5",
+    "platform": "win32"
+  },
+  "passed": true,
+  "runtime_url": "http://127.0.0.1:8767/",
+  "database_schema": 3,
+  "new_browser_script_runs": 0,
+  "external_model_requests": 0,
+  "historical_experiment_id": "6a6cff0b62a7477a8b3dc7793c4f3433",
+  "checks": {
+    "footer_version": "0.3.3-dev",
+    "historical_heldout_contract_pass": "12/12",
+    "historical_heldout_complete_success": "9/12",
+    "historical_H01_report": true,
+    "citation_source": "primary-release",
+    "citation_line": 2,
+    "evidence_jump_seq": 9,
+    "evidence_payload_chars": 271,
+    "chunk_navigation_disabled_for_single_chunk": true,
+    "browser_console_errors": 0
+  },
+  "source_unchanged_during_checks": true,
+  "screenshots": [
+    "docs/screenshots/v033-runtime.png"
+  ],
+  "scope": "Final browser/service compatibility against migrated historical records; no new held-out suite run or model capability claim",
+  "historical_browser_checks_not_rerun": "v0.3.2 viewport 768 and synthetic corrupt/payload fixtures; preserved in UI_VERIFICATION_V032.json"
+}
